@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
     profile_cover_image = models.ImageField(upload_to='profile_cover_image',blank=True,null=True)
     phone_number = PhoneNumberField(blank=True,unique=True)
     is_google = models.BooleanField(default=False)
+    is_company = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

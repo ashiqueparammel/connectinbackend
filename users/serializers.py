@@ -29,6 +29,9 @@ class User_Sign_Up(ModelSerializer):
         if password != password2:
             raise serializers.ValidationError({"password": "password does not match"})
         user.set_password(password)
+        if self._validated_data["is_company"] is True:
+            user.is_company = True
+        
         
         if self._validated_data["is_google"] is True:
             user.is_google = True
@@ -45,5 +48,6 @@ class myTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
         token["is_active"] = user.is_active
         token["is_admin"] = user.is_superuser
+        token["is_company"] = user.is_company
 
         return token

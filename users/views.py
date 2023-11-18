@@ -21,6 +21,8 @@ class Signup(APIView):
 
     def post(self, request):
         serializer = User_Sign_Up(data=request.data)
+        data = request.data
+        print(data,'cheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeekk')
         if serializer.is_valid():
             user = serializer.save()
             token = default_token_generator.make_token(
@@ -55,6 +57,7 @@ class Signup(APIView):
         else:
             statusText = serializer.errors
             data = {"Text": statusText, "status": 404}
+            print(data,'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror')
             return Response(data=data)
 
 
@@ -66,7 +69,7 @@ class VerifyUserView(GenericAPIView):
             if default_token_generator.check_token(user, token):
                 user.is_active = True
                 user.save()
-                message = "Congrats! Account activated!"
+                message="Congrats! Account activated!"
                 url = config("front_end_url")
                 redirect_url = f"{url}login" + "?message=" + message
                 return HttpResponseRedirect(redirect_url)
