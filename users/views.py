@@ -1,4 +1,5 @@
 from urllib.parse import quote
+import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -22,7 +23,7 @@ class Signup(APIView):
     def post(self, request):
         serializer = User_Sign_Up(data=request.data)
         data = request.data
-        print(data,'cheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeekk')
+        print(data, "cheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeekk")
         if serializer.is_valid():
             user = serializer.save()
             token = default_token_generator.make_token(
@@ -57,7 +58,7 @@ class Signup(APIView):
         else:
             statusText = serializer.errors
             data = {"Text": statusText, "status": 404}
-            print(data,'errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror')
+            print(data, "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror")
             return Response(data=data)
 
 
@@ -69,7 +70,7 @@ class VerifyUserView(GenericAPIView):
             if default_token_generator.check_token(user, token):
                 user.is_active = True
                 user.save()
-                message="Congrats! Account activated!"
+                message = "Congrats! Account activated!"
                 url = config("front_end_url")
                 redirect_url = f"{url}login" + "?message=" + message
                 return HttpResponseRedirect(redirect_url)
@@ -85,26 +86,29 @@ class VerifyUserView(GenericAPIView):
             return HttpResponseRedirect(redirect_url)
 
 
-
 class Google_Signup(APIView):
     def post(self, request):
-        email = request.data.get('email')
-        if not CustomUser.objects.filter(email=email,is_google=True).exists():
+        email = request.data.get("email")
+        is_google = request.data.get("is_google")
+        if not CustomUser.objects.filter(email=email).exists():
             serializer = User_Sign_Up(data=request.data)
             if serializer.is_valid():
                 user = serializer.save()
                 user.save()
-        if  CustomUser.objects.filter(email=email,is_google=True).exists():
+                data = {"token": "Your google SignUp successfully!","signup":"signup", "status": 200}
+        if CustomUser.objects.filter(email=email, is_google=True).exists():
             user = CustomUser.objects.get(email=email)
+            data = {"token": "Your google Login successfully!","login":"login", "status": 200}
 
-        if user is not None :
-            token = myTokenObtainPairSerializer(user)
-            data = {"token": token, "status": 200}
+        elif CustomUser.objects.filter(email=email, is_google=False).exists():
+            data = {"token": "Your Email Already Exist  ! ", "status": 201}
+            return Response(data=data)
+
+        if user is not None:
             return Response(data=data)
         else:
             data = {"Text": serializer.errors, "status": 400}
             return Response(data=data)
-            
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

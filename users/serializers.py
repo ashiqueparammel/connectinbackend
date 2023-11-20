@@ -31,12 +31,9 @@ class User_Sign_Up(ModelSerializer):
         user.set_password(password)
         if self._validated_data["is_company"] is True:
             user.is_company = True
-        
-        
         if self._validated_data["is_google"] is True:
             user.is_google = True
             user.is_active = True
-
         user.save()
         return user
 
@@ -47,7 +44,7 @@ class myTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token["email"] = user.email
         token["is_active"] = user.is_active
-        token["is_admin"] = user.is_superuser
+        token["is_superuser"] = user.is_superuser
         token["is_company"] = user.is_company
-
+        token["is_google"] = user.is_google
         return token

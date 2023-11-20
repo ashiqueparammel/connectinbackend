@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=250, unique=True)
     profile_image = models.ImageField(upload_to='profile',blank=True,null=True)
     profile_cover_image = models.ImageField(upload_to='profile_cover_image',blank=True,null=True)
-    phone_number = PhoneNumberField(blank=True,unique=True)
+    phone_number = PhoneNumberField(blank=True)
     is_google = models.BooleanField(default=False)
     is_company = models.BooleanField(default=False)
     
