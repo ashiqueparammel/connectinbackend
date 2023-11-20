@@ -23,7 +23,6 @@ class Signup(APIView):
     def post(self, request):
         serializer = User_Sign_Up(data=request.data)
         data = request.data
-        print(data, "cheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeekk")
         if serializer.is_valid():
             user = serializer.save()
             token = default_token_generator.make_token(
@@ -58,7 +57,6 @@ class Signup(APIView):
         else:
             statusText = serializer.errors
             data = {"Text": statusText, "status": 404}
-            print(data, "errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror")
             return Response(data=data)
 
 
@@ -89,8 +87,13 @@ class VerifyUserView(GenericAPIView):
 class Google_Signup(APIView):
     def post(self, request):
         email = request.data.get("email")
-        is_google = request.data.get("is_google")
+        is_company = request.data.get("is_company")
+        
+            
         if not CustomUser.objects.filter(email=email).exists():
+            if is_company == '':
+                data = {"token": "Your not Signed Please signup !","is_company":"is_company", "status": 204}
+                return Response(data=data)
             serializer = User_Sign_Up(data=request.data)
             if serializer.is_valid():
                 user = serializer.save()
