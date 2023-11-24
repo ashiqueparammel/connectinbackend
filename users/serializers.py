@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import (
-    TokenBlacklistSerializer,
     TokenObtainPairSerializer,
 )
 from users.models import CustomUser
@@ -48,3 +47,9 @@ class myTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["is_company"] = user.is_company
         token["is_google"] = user.is_google
         return token
+
+class userDataSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model =CustomUser
+        fields =['id','username','email','is_superuser','is_company','phone_number','profile_cover_image','is_active','profile_image']

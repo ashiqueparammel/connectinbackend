@@ -1,3 +1,4 @@
+import json
 from urllib.parse import quote
 import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -5,16 +6,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from connectin.settings import STATIC_URL
 from .models import CustomUser
-from .serializers import User_Sign_Up, myTokenObtainPairSerializer
+from .serializers import User_Sign_Up, myTokenObtainPairSerializer, userDataSerializer
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
 from django.http import HttpResponseRedirect
 from decouple import config
+from rest_framework.filters import SearchFilter
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class Signup(APIView):
@@ -45,13 +48,17 @@ class Signup(APIView):
             subject = "Connect in | Activate Your Account"
             from_email = "cootinternational@gmail.com"
             recipient_list = [user.email]
+
             send_mail(
                 subject,
                 email_html_message,
                 from_email,
                 recipient_list,
                 html_message=email_html_message,
+                fail_silently=True,
             )
+
+            # print(is_sent,'------------> is sent')
             data = {"Text": "registered", "status": 200}
             return Response(data=data)
         else:
@@ -85,34 +92,110 @@ class VerifyUserView(GenericAPIView):
 
 
 class Google_Signup(APIView):
+    
     def post(self, request):
+        
         email = request.data.get("email")
         is_company = request.data.get("is_company")
-        
-            
+
         if not CustomUser.objects.filter(email=email).exists():
-            if is_company == '':
-                data = {"token": "Your not Signed Please signup !","is_company":"is_company", "status": 204}
+            if is_company == "":
+                data = {
+                    "Text": "Your not Signed Please signup !",
+                    "status": 204,
+                }
                 return Response(data=data)
             serializer = User_Sign_Up(data=request.data)
             if serializer.is_valid():
                 user = serializer.save()
                 user.save()
-                data = {"token": "Your google SignUp successfully!","signup":"signup", "status": 200}
-        if CustomUser.objects.filter(email=email, is_google=True).exists():
-            user = CustomUser.objects.get(email=email)
-            data = {"token": "Your google Login successfully!","login":"login", "status": 200}
-
-        elif CustomUser.objects.filter(email=email, is_google=False).exists():
-            data = {"token": "Your Email Already Exist  ! ", "status": 201}
+                data = {
+                    "Text": "Your google SignUp successfully!",
+                    "signup": "signup",
+                    "status": 200,
+                }
+                return Response(data=data)
+        if CustomUser.objects.filter(email=email).exists():
+            data = {
+                "Text": "This Email alredy exist!",
+                "status": 403,
+            }
             return Response(data=data)
-
-        if user is not None:
-            return Response(data=data)
+        
         else:
-            data = {"Text": serializer.errors, "status": 400}
+            data = {"Text": serializer.errors, "status": 404}
             return Response(data=data)
+        
+class Google_login (APIView):
+    
+    def post(self, request):
+        
+        email = request.data.get("email")
+        
+        if CustomUser.objects.filter(email=email).exists(): 
+            access_token = request.data.get("access_token")
+            Googleurl = config("GOOGLE_VERYFY")
+            get_data = f"{Googleurl}access_token={access_token}"
+            response = requests.get(get_data)
 
+            if response.status_code == 200:
+                user_data = response.json()
+                check_email = user_data['email']
+                if check_email == email:
+                    user = CustomUser.objects.get(email=email)
+                    token = RefreshToken.for_user(user)
+                    token["email"] = user.email
+                    token["is_active"] = user.is_active
+                    token["is_superuser"] = user.is_superuser
+                    token["is_company"] = user.is_company
+                    token["is_google"] = user.is_google
+                    dataa = {
+                        "refresh": str(token),
+                        "access": str(token.access_token),
+                    }
+
+                    data = {
+                        "message": "Your Login successfully! ",
+                        "status": 201,
+                        "token": dataa,
+                    }
+                    return Response(data=data)   
+            else:
+                data = {
+                    "message": response.text,
+                    "status": 406,
+                }
+                return Response(data=data)  
+        else:
+            data = {
+                        "message": "This Email have no account please Create new account! ",
+                        "status": 403,
+                    }
+            return Response(data=data)     
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = myTokenObtainPairSerializer
+
+
+class UserList(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
+    filter_backends = (SearchFilter,)
+    search_fields = ("username", "email", "phone_number")
+    serializer_class = userDataSerializer
+
+
+class UserDetails(UpdateAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
+    serializer_class = userDataSerializer
+
+
+class CompanyList(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
+    filter_backends = (SearchFilter,)
+    search_fields = ("username", "email", "phone_number")
+    serializer_class = userDataSerializer
+
+
+class CompanyDetails(UpdateAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
+    serializer_class = userDataSerializer
