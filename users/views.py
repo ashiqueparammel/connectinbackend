@@ -1,28 +1,26 @@
-import json
-from urllib.parse import quote
 import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from connectin.settings import STATIC_URL
-from .models import CustomUser
-from .serializers import User_Sign_Up, myTokenObtainPairSerializer, userDataSerializer
+from .models import CommonSkills, CustomUser
+from .serializers import CommonSkillsSerializer, User_Sign_Up, myTokenObtainPairSerializer, userDataSerializer
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView,ListCreateAPIView,RetrieveUpdateAPIView
 from django.http import HttpResponseRedirect
 from decouple import config
 from rest_framework.filters import SearchFilter
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 class Signup(APIView):
     template_name = "activation/activation_email.html"
-
+     
     def post(self, request):
         serializer = User_Sign_Up(data=request.data)
         data = request.data
@@ -65,7 +63,9 @@ class Signup(APIView):
             statusText = serializer.errors
             data = {"Text": statusText, "status": 404}
             return Response(data=data)
-
+        
+    
+        
 
 class VerifyUserView(GenericAPIView):
     def get(self, request, uidb64, token):
@@ -153,12 +153,20 @@ class Google_login (APIView):
                         "refresh": str(token),
                         "access": str(token.access_token),
                     }
-
-                    data = {
+                    
+                    if user.is_active:
+                        data = {
                         "message": "Your Login successfully! ",
                         "status": 201,
                         "token": dataa,
                     }
+                    else:
+                         data = {
+                        "message": "Your Account has been blocked ! ",
+                        "status": 202,
+                        "token": dataa,
+                    }
+                            
                     return Response(data=data)   
             else:
                 data = {
@@ -178,13 +186,13 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class UserList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
+    queryset = CustomUser.objects.filter(is_superuser=False,is_company=False)
     filter_backends = (SearchFilter,)
-    search_fields = ("username", "email", "phone_number")
+    search_fields = ("username", "email","id","is_active","phone_number")
     serializer_class = userDataSerializer
 
 
-class UserDetails(UpdateAPIView):
+class UserDetails(RetrieveUpdateAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
     serializer_class = userDataSerializer
 
@@ -192,10 +200,23 @@ class UserDetails(UpdateAPIView):
 class CompanyList(ListAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
     filter_backends = (SearchFilter,)
-    search_fields = ("username", "email", "phone_number")
+    search_fields = ("username", "email","id","is_active", "phone_number")
     serializer_class = userDataSerializer
 
 
-class CompanyDetails(UpdateAPIView):
+class CompanyDetails(RetrieveUpdateAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
     serializer_class = userDataSerializer
+    
+
+class CommonSkillsAdd(ListCreateAPIView):
+    queryset =  CommonSkills.objects.all()
+    filter_backends = (SearchFilter,)
+    search_fields = ('__all__')
+    serializer_class = CommonSkillsSerializer    
+    
+class CommonSkillsUpdate(RetrieveUpdateAPIView):
+    queryset =  CommonSkills.objects.all()
+    serializer_class = CommonSkillsSerializer       
+           
+       

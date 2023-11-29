@@ -16,4 +16,6 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     
-    
+
+class CommonSkills(models.Model):
+    skills = models.CharField(max_length=250)  

@@ -8,8 +8,9 @@ urlpatterns = [
     path('google_signup/',views.Google_Signup.as_view(), name='Google_Signup'),
     path('google_login/',views.Google_login.as_view(), name='Google_login'),
     path('userlist/',views.UserList.as_view(), name='UserList'),
-    path('Userdetails/',views.UserDetails.as_view(), name='UserDetails'),
     path('companylist/',views.CompanyList.as_view(), name='CompanyList'),
-    path('companydetails/',views.CompanyDetails.as_view(), name='CompanyDetails'),
-    
+    path('commonskillsadd/',views.CommonSkillsAdd.as_view(), name='CommonSkillsAdd'),
+    path('Userdetails/<int:pk>/',views.UserDetails.as_view(), name='UserDetails'),
+    path('companydetails/<int:pk>/',views.CompanyDetails.as_view(), name='CompanyDetails'),
+    path('commonskillsupdate/<int:pk>/',views.CommonSkillsUpdate.as_view(), name='CommonSkillsUpdate'),  
 ]
