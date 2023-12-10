@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
-from users.serializers import userDataSerializer
-from .models import Company, JobPost
+from users.serializers import CommonSkillsSerializer, userDataSerializer
+from .models import Company, JobPost, Required_Skills
 
 class CompanySerializer(ModelSerializer):
     class Meta:
@@ -19,9 +19,17 @@ class JobPostSerializer(ModelSerializer):
     class Meta:
         model = JobPost
         fields = '__all__'
-
+        
+class Required_SkillsSerializer(ModelSerializer):
+    skills = CommonSkillsSerializer()
+    class Meta:
+        model = Required_Skills    
+        fields = '__all__'       
+                      
 class JobPostListSerializer(ModelSerializer):
-    company_id = CompanySerializer()
+    Required_Skill = Required_SkillsSerializer(source='required_skills',many=True)
+    company_id = CompanyListSerializer()
     class Meta:
         model = JobPost
         fields = '__all__'        
+

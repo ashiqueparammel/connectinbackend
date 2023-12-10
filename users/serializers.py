@@ -64,6 +64,7 @@ class userDataSerializer(serializers.ModelSerializer):
 
 
 class CommonSkillsSerializer(ModelSerializer):
+    
     class Meta:
         model = CommonSkills
         fields = "__all__"

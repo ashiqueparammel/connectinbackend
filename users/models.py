@@ -18,4 +18,4 @@ class CustomUser(AbstractUser):
     
 
 class CommonSkills(models.Model):
-    skills = models.CharField(max_length=250)  
+    skills = models.CharField(max_length=250, unique=True)  
