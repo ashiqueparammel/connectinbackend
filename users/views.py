@@ -17,6 +17,8 @@ from rest_framework.filters import SearchFilter
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+
 
 class Signup(APIView):
     template_name = "activation/activation_email.html"
@@ -217,6 +219,16 @@ class CommonSkillsAdd(ListCreateAPIView):
     
 class CommonSkillsUpdate(RetrieveUpdateAPIView):
     queryset =  CommonSkills.objects.all()
-    serializer_class = CommonSkillsSerializer       
-           
+    serializer_class = CommonSkillsSerializer     
+    
+    
+
+class Authentication(APIView):
+    permission_classes =(IsAuthenticated,)
+    def get(self,request):
+        content={'user':str(request.user),'userid':str(request.user.id),'email':str(request.user.email),'is_active':str(request.user.is_active)}
+        return Response(content)  
+    print('chekked=========================================<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>')
+    
+
        
