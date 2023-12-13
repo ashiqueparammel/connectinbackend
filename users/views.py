@@ -220,15 +220,13 @@ class CommonSkillsAdd(ListCreateAPIView):
 class CommonSkillsUpdate(RetrieveUpdateAPIView):
     queryset =  CommonSkills.objects.all()
     serializer_class = CommonSkillsSerializer     
-    
-    
-
+        
 class Authentication(APIView):
     permission_classes =(IsAuthenticated,)
     def get(self,request):
         content={'user':str(request.user),'userid':str(request.user.id),'email':str(request.user.email),'is_active':str(request.user.is_active)}
         return Response(content)  
-    print('chekked=========================================<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>')
     
 
-       
+# class logout(APIView):
+          

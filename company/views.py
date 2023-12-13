@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework.generics import RetrieveUpdateAPIView,ListAPIView,CreateAPIView,ListCreateAPIView
 from .serializers import CompanyListSerializer, CompanySerializer, JobPostListSerializer, JobPostSerializer
 from .models import Company, JobPost
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter,OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CompanyAdd(CreateAPIView):
@@ -30,9 +31,15 @@ class JobAdd(ListCreateAPIView):
     
 class JobListUser(ListAPIView): 
     queryset = JobPost.objects.filter(is_available=True) 
-    filter_backends = [SearchFilter]
-    search_fields = ['Job_title','salary','Experience','job_type','posted_date','company_id__Location','company_id__company_name']
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+    filterset_fields =[ 'job_type','Experience']
+    search_fields = ['Job_title','salary','company_id__Location','company_id__company_name']
+    ordering_fields =['posted_date']
     serializer_class = JobPostListSerializer       
+    
+class JobUserView(RetrieveUpdateAPIView):
+    queryset =JobPost.objects.filter(is_available=True)   
+    serializer_class = JobPostListSerializer        
 
 class JobUpdate(RetrieveUpdateAPIView):
     queryset =JobPost.objects.filter(is_available=True)   
