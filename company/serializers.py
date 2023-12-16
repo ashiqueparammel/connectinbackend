@@ -9,7 +9,7 @@ class CompanySerializer(ModelSerializer):
         
         
 class CompanyListSerializer(ModelSerializer):
-    user_id = userDataSerializer()
+    user = userDataSerializer()
     class Meta:
         model = Company
         fields ='__all__'

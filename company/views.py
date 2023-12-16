@@ -7,10 +7,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CompanyAdd(CreateAPIView):
-    queryset = Company.objects.filter(is_available=True) 
+    queryset = Company.objects.all() 
     serializer_class = CompanySerializer
     
-class CompanyListAdd(CreateAPIView):
+class CompanyListAdd(ListAPIView):
     queryset = Company.objects.filter(is_available=True) 
     serializer_class = CompanyListSerializer    
     
@@ -21,6 +21,7 @@ class CompanyUpdate(RetrieveUpdateAPIView):
 class CompanyDetail(ListAPIView):  
     serializer_class = CompanyListSerializer  
     def get_queryset(self):
+        print(self.kwargs.get('user_id'),'check my user id')
         return Company.objects.filter(is_available=True,user_id=self.kwargs.get('user_id'))  
     
 class JobAdd(ListCreateAPIView): 

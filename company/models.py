@@ -2,7 +2,7 @@ from django.db import models
 from users.models import CommonSkills, CustomUser
 
 class Company(models.Model):
-    user_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     company_name = models.CharField(max_length=250,unique=True)
     Industry = models.CharField(max_length=250)
     Company_Size = models.CharField(max_length=250)
@@ -12,7 +12,7 @@ class Company(models.Model):
     
 
 class JobPost(models.Model):
-    company_id = models.ForeignKey(Company,on_delete=models.CASCADE)
+    company = models.ForeignKey(Company,on_delete=models.CASCADE)
     Job_title = models.CharField(max_length=250)
     job_description = models.TextField(blank=False)
     Experience = models.CharField(max_length=250)  
