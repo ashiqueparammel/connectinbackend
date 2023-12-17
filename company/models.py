@@ -8,6 +8,7 @@ class Company(models.Model):
     Company_Size = models.CharField(max_length=250)
     Location = models.CharField(max_length=250)
     Address = models.TextField(blank=False)
+    Description = models.TextField(blank=True)
     is_available =models.BooleanField(default=True)
     
 
