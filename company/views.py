@@ -21,7 +21,7 @@ class CompanyUpdate(RetrieveUpdateAPIView):
 class CompanyDetail(ListAPIView):  
     serializer_class = CompanyListSerializer  
     def get_queryset(self):
-        print(self.kwargs.get('user_id'),'check my user id')
+        # print(self.kwargs.get('user_id'),'check my user id')
         return Company.objects.filter(is_available=True,user_id=self.kwargs.get('user_id'))  
     
 class JobAdd(ListCreateAPIView): 
