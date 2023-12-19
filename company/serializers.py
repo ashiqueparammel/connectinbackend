@@ -28,7 +28,7 @@ class Required_SkillsSerializer(ModelSerializer):
                       
 class JobPostListSerializer(ModelSerializer):
     Required_Skill = Required_SkillsSerializer(source='required_skills',many=True)
-    company_id = CompanyListSerializer()
+    company = CompanyListSerializer()
     class Meta:
         model = JobPost
         fields = '__all__'        

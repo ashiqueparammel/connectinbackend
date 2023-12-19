@@ -16,7 +16,7 @@ class JobPost(models.Model):
     company = models.ForeignKey(Company,on_delete=models.CASCADE)
     Job_title = models.CharField(max_length=250)
     job_description = models.TextField(blank=False)
-    Experience = models.CharField(max_length=250)  
+    Experience = models.PositiveIntegerField()
     job_type = models.CharField(max_length=250)
     salary = models.CharField(max_length=250)
     posted_date = models.DateTimeField(auto_now_add=True)
