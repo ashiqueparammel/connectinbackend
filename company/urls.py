@@ -11,6 +11,9 @@ urlpatterns = [
     
     path('companydetails/<int:user>/',views.CompanyDetail.as_view(), name='CompanyDetail'),   
     path('joblistuser/',views.JobListUser.as_view(), name='JobListUser'),   
+    path('jobskillsadd/',views.JobRequired_Skills.as_view(), name='JobRequired_Skills'),   
     path('jobuserview/<int:pk>/',views.JobUserView.as_view(), name='JobUserView'),   
+    path('listrequiredskills/<int:job>/',views.ListRequired_Skills.as_view(), name='ListRequired_Skills'),   
+    path('updatejobskills/<int:pk>/',views.RemoveJobRequired_Skills.as_view(), name='RemoveJobRequired_Skills'),   
     
 ]

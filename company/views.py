@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from rest_framework.generics import RetrieveUpdateAPIView,ListAPIView,CreateAPIView,ListCreateAPIView
-from .serializers import CompanyListSerializer, CompanySerializer, JobPostListSerializer, JobPostSerializer
-from .models import Company, JobPost
+from rest_framework.generics import RetrieveUpdateAPIView,ListAPIView,CreateAPIView,ListCreateAPIView,DestroyAPIView
+from .serializers import CompanyListSerializer, CompanySerializer, JobPostListSerializer, JobPostSerializer, JobRequired_SkillsSerializer, Required_SkillsSerializer
+from .models import Company, JobPost, Required_Skills
 from rest_framework.filters import SearchFilter,OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -51,4 +51,21 @@ class JobList(ListAPIView):
     serializer_class = JobPostListSerializer 
     def get_queryset(self):
         return JobPost.objects.filter(is_available=True,company=self.kwargs.get('company'))
+    
+    
+class JobRequired_Skills(CreateAPIView):
+    queryset = Required_Skills.objects.all()
+    serializer_class = JobRequired_SkillsSerializer
+
+class RemoveJobRequired_Skills(DestroyAPIView):
+    queryset = Required_Skills.objects.all()
+    serializer_class = JobRequired_SkillsSerializer    
+    
+    
+class ListRequired_Skills(ListAPIView):
+    serializer_class = Required_SkillsSerializer
+    def get_queryset(self):
+        return Required_Skills.objects.filter(Job_post=self.kwargs.get('job'))   
+   
+    
        

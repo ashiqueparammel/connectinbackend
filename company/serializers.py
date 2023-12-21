@@ -19,6 +19,10 @@ class JobPostSerializer(ModelSerializer):
     class Meta:
         model = JobPost
         fields = '__all__'
+class JobRequired_SkillsSerializer(ModelSerializer):
+    class Meta:
+        model = Required_Skills    
+        fields = '__all__'         
         
 class Required_SkillsSerializer(ModelSerializer):
     skills = CommonSkillsSerializer()
