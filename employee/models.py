@@ -6,11 +6,13 @@ from users.models import CustomUser
 
 class EmployeeProfile(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    Job_titile = models.CharField(max_length=250)
-    cv_file =models.FileField(upload_to='cv_files/')
+    header = models.CharField(max_length=250 ,blank=True,null=True)
+    description = models.CharField(max_length=250 ,blank=True,null=True)
+    Location = models.CharField(max_length=250 ,blank=True,null=True)
+    cv_file =models.FileField(upload_to='cv_files/',blank=True,null=True)
     
 class SavedPost(models.Model):
-    profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE) 
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=True) 
     job_post = models.ForeignKey(JobPost,on_delete=models.CASCADE)
     is_available =models.BooleanField(default=True)
     
@@ -29,8 +31,7 @@ class PersonalSkills(models.Model):
     is_available =models.BooleanField(default=True)
     
       
-        
-    
+         
 class job_Applications(models.Model):
     profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE) 
     job_post = models.ForeignKey(JobPost,on_delete=models.CASCADE)

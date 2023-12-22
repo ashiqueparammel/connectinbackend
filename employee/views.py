@@ -1,13 +1,19 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView
 from .models import Education, EmployeeProfile, PersonalSkills, SavedPost, job_Applications
-from .serializers import EducationSerializer, EmployeeProfileSerializer, PersonalSkillsSerializer, SavePostSerializer, job_ApplicationsSerializer
+from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, PersonalSkillsSerializer, SavePostSerializer, job_ApplicationsSerializer
 # from rest_framework.filters import SearchFilter
 
 
 class EmployeeProfileAdd(ListCreateAPIView):
     queryset = EmployeeProfile.objects.all()
     serializer_class = EmployeeProfileSerializer
+
+class EmployeeProfileDetail(ListAPIView):  
+    serializer_class = EmployeeProfileDetail_Serializer  
+    def get_queryset(self):
+        # print(self.kwargs.get('user_id'),'check my user id')
+        return EmployeeProfile.objects.filter(user=self.kwargs.get('user'))      
     
 class EmployeeProfileUpdate(RetrieveUpdateAPIView):
     queryset = EmployeeProfile.objects.all() 
@@ -17,7 +23,12 @@ class SavePostAdd(ListCreateAPIView):
     queryset = SavedPost.objects.filter(is_available=True)
     serializer_class = SavePostSerializer
     
-class SavePostUpdate(RetrieveUpdateAPIView):
+class UserSavePostDetail(ListAPIView):
+    serializer_class = DetailSavePostSerializer    
+    def get_queryset(self):
+        return SavedPost.objects.filter(is_available=True,user=self.kwargs.get('user'))      
+    
+class SavePostUpdate(RetrieveUpdateDestroyAPIView):
     queryset = SavedPost.objects.filter(is_available=True)
     serializer_class = SavePostSerializer
 

@@ -12,4 +12,6 @@ urlpatterns = [
     path('educationupdate/<int:pk>/',views.EducationUpdate.as_view(), name='EducationUpdate'),   
     path('personalskillsupdate/<int:pk>/',views.PersonalSkillsUpdate.as_view(), name='PersonalSkillsUpdate'),   
     path('jobapplicationsupdate/<int:pk>/',views.job_ApplicationsUpdate.as_view(), name='job_ApplicationsUpdate'),   
+    path('userprofiledetails/<int:user>/',views.EmployeeProfileDetail.as_view(), name='EmployeeProfileDetail'),   
+    path('usersavepostdetail/<int:user>/',views.UserSavePostDetail.as_view(), name='UserSavePostDetail'),   
 ]
