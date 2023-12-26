@@ -18,6 +18,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 
 class Signup(APIView):
@@ -228,5 +229,19 @@ class Authentication(APIView):
         return Response(content)  
     
 
-# class logout(APIView):
+class logout(APIView):
+    permission_classes =(IsAuthenticated,)
+    def post(self, request):
+        try:
+            refresh_token = request.data['refresh_token']
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({'detail': 'Logout successful.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': 'Invalid token.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    
+    
           

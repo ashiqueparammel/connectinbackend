@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import CommonSkills, CustomUser
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Company(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
@@ -11,6 +13,12 @@ class Company(models.Model):
     Description = models.TextField(blank=True)
     is_available =models.BooleanField(default=True)
     
+@receiver(post_save,sender=Company)
+def companyBlock(sender,instance,created,**kwargs):
+    if not created and not instance.is_available:
+        JobPost.objects.filter(company=instance).update(is_available=False)
+    if not created and  instance.is_available:
+        JobPost.objects.filter(company=instance).update(is_available=True)      
 
 class JobPost(models.Model):
     company = models.ForeignKey(Company,on_delete=models.CASCADE)

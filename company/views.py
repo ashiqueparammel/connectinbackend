@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from rest_framework.generics import RetrieveUpdateAPIView,ListAPIView,CreateAPIView,ListCreateAPIView,DestroyAPIView
 from .serializers import CompanyListSerializer, CompanySerializer, JobPostListSerializer, JobPostSerializer, JobRequired_SkillsSerializer, Required_SkillsSerializer
@@ -10,12 +11,14 @@ class CompanyAdd(CreateAPIView):
     queryset = Company.objects.all() 
     serializer_class = CompanySerializer
     
-class CompanyListAdd(ListAPIView):
+class CompanyList(ListAPIView):
     queryset = Company.objects.filter(is_available=True) 
+    filter_backends = [SearchFilter]
+    search_fields = ("company_name", "user__email","id","user__is_active", "user__phone_number")
     serializer_class = CompanyListSerializer    
     
 class CompanyUpdate(RetrieveUpdateAPIView):
-    queryset = Company.objects.filter(is_available=True) 
+    queryset = Company.objects.all() 
     serializer_class = CompanySerializer   
     
 class CompanyDetail(ListAPIView):  
@@ -31,12 +34,21 @@ class JobAdd(ListCreateAPIView):
     serializer_class = JobPostSerializer   
     
 class JobListUser(ListAPIView): 
-    queryset = JobPost.objects.filter(is_available=True) 
+    serializer_class = JobPostListSerializer       
     filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
     filterset_fields =[ 'job_type','Experience']
-    search_fields = ['Job_title','salary','company_id__Location','company_id__company_name']
-    ordering_fields =['posted_date']
-    serializer_class = JobPostListSerializer       
+    search_fields = ['Job_title','salary','company__Location','company__company_name']
+    # ordering_fields =['posted_date']
+    def get_queryset(self):
+        queryset = JobPost.objects.filter(is_available=True) 
+        start = self.request.query_params.get('start')
+        end = self.request.query_params.get('end')
+  
+        if start and end and start!= end:
+          queryset =  JobPost.objects.filter(posted_date__range=(start, end))
+        
+        
+        return queryset
     
 class JobUserView(RetrieveUpdateAPIView):
     queryset =JobPost.objects.filter(is_available=True)   
@@ -67,5 +79,11 @@ class ListRequired_Skills(ListAPIView):
     def get_queryset(self):
         return Required_Skills.objects.filter(Job_post=self.kwargs.get('job'))   
    
+
+class CompanyListAdmin(ListAPIView):
+    queryset = Company.objects.all() 
+    filter_backends = [SearchFilter]
+    search_fields = ("company_name", "user__email","id","user__is_active", "user__phone_number")
+    serializer_class = CompanyListSerializer    
     
        
