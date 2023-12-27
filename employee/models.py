@@ -1,6 +1,6 @@
 from django.db import models
 from company.models import JobPost
-from users.models import CustomUser
+from users.models import CommonSkills, CustomUser
 
 # Create your models here.
 
@@ -26,9 +26,9 @@ class Education(models.Model):
     
 
 class PersonalSkills(models.Model):
-    skills = models.CharField(max_length=250)
-    profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE) 
-    is_available =models.BooleanField(default=True)
+    skills=models.ForeignKey(CommonSkills,on_delete=models.CASCADE) 
+    profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE,related_name='personal_skills') 
+  
     
       
          
