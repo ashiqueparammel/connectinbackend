@@ -36,8 +36,13 @@ class SavePostUpdate(RetrieveUpdateDestroyAPIView):
 class EducationAdd(ListCreateAPIView):
     queryset = Education.objects.filter(is_available=True)
     serializer_class = EducationSerializer
+
+class ListPersonalEducation(ListAPIView):
+    serializer_class = EducationSerializer
+    def get_queryset(self):
+        return Education.objects.filter(profile=self.kwargs.get('profile'))   
     
-class EducationUpdate(RetrieveUpdateAPIView):
+class EducationUpdate(RetrieveUpdateDestroyAPIView):
     queryset = Education.objects.filter(is_available=True)
     serializer_class = EducationSerializer
          

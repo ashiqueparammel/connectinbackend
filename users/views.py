@@ -240,8 +240,42 @@ class logout(APIView):
             return Response({'detail': 'Logout successful.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'detail': 'Invalid token.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+        
     
 
-    
-    
-          
+class RefreshTokenAuto(APIView):
+    permission_classes =(IsAuthenticated,)
+        
+    def get(self,request):
+        user=request.user
+        
+        token = RefreshToken.for_user(user)
+        token["email"] = user.email
+        token["is_active"] = user.is_active
+        token["is_superuser"] = user.is_superuser
+        token["is_company"] = user.is_company
+        token["is_google"] = user.is_google
+        dataa = {
+            "refresh": str(token),
+            "access": str(token.access_token),
+        }
+        
+        if user.is_active:
+            data = {
+            "message": "Your Login successfully! ",
+            "status": 201,
+            "token": dataa,
+        }
+        else:
+                data = {
+            "message": "Your Account has been blocked ! ",
+            "status": 202,
+            "token": dataa,
+        }
+                
+        return Response(data=data)       
+
+

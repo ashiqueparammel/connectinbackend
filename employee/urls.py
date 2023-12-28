@@ -15,5 +15,6 @@ urlpatterns = [
     path('userprofiledetails/<int:user>/',views.EmployeeProfileDetail.as_view(), name='EmployeeProfileDetail'),   
     path('usersavepostdetail/<int:user>/',views.UserSavePostDetail.as_view(), name='UserSavePostDetail'),
     path('listPersonalSkills/<int:profile>/', views.ListPersonalSkills.as_view(), name='ListPersonalSkills'),
-    path('removePersonalSkills/<int:pk>/', views.RemovePersonalSkills.as_view(), name='RemovePersonalSkills')   
+    path('removePersonalSkills/<int:pk>/', views.RemovePersonalSkills.as_view(), name='RemovePersonalSkills'),
+    path('listPersonalEducation/<int:profile>/', views.ListPersonalEducation.as_view(), name='ListPersonalEducation'),
 ]
