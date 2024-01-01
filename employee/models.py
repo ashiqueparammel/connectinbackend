@@ -21,7 +21,7 @@ class Education(models.Model):
     Studied_year = models.CharField(max_length=250)  
     Institute_name = models.CharField(max_length=250)  
     description = models.CharField(max_length=250)  
-    profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE) 
+    profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE,related_name='personal_Education') 
     is_available =models.BooleanField(default=True)
     
 
@@ -29,14 +29,14 @@ class PersonalSkills(models.Model):
     skills=models.ForeignKey(CommonSkills,on_delete=models.CASCADE) 
     profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE,related_name='personal_skills') 
   
-    
-      
-         
+
 class job_Applications(models.Model):
     profile = models.ForeignKey(EmployeeProfile,on_delete=models.CASCADE) 
     job_post = models.ForeignKey(JobPost,on_delete=models.CASCADE)
-    education = models.ForeignKey(Education,on_delete=models.CASCADE)
-    skills = models.ForeignKey(PersonalSkills,on_delete=models.CASCADE)
+    Experience = models.PositiveSmallIntegerField(null=True)
+    currentSalary = models.IntegerField(null=True)
+    ExpectedSalary = models.IntegerField(null=True)
+    description = models.TextField(null=True)
     posted_date = models.DateTimeField(auto_now_add=True)
     
     

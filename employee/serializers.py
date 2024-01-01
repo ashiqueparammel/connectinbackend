@@ -16,6 +16,7 @@ class PersonalSkillsListSerializer(ModelSerializer):
            
 class EmployeeProfileDetail_Serializer(ModelSerializer):
     profile =PersonalSkillsListSerializer(source='personal_skills',many=True)
+    
     user= userDataSerializer()
     class Meta:
         model = EmployeeProfile
