@@ -69,5 +69,9 @@ class job_ApplicationsAdd(ListCreateAPIView):
     
 class job_ApplicationsUpdate(RetrieveUpdateAPIView):
     queryset = job_Applications.objects.all()
-    serializer_class = job_ApplicationsSerializer    
-    
+    serializer_class = job_ApplicationsSerializer  
+      
+class job_ApplicationsListPersonal(ListAPIView):
+    serializer_class = job_ApplicationsSerializer   
+    def get_queryset(self):
+        return job_Applications.objects.filter(profile=self.kwargs.get('profile'))
