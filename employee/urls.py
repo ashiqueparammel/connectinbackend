@@ -18,4 +18,9 @@ urlpatterns = [
     path('removePersonalSkills/<int:pk>/', views.RemovePersonalSkills.as_view(), name='RemovePersonalSkills'),
     path('listPersonalEducation/<int:profile>/', views.ListPersonalEducation.as_view(), name='ListPersonalEducation'),
     path('jobapplicationslistpersonal/<int:profile>/', views.job_ApplicationsListPersonal.as_view(), name='job_ApplicationsListPersonal'),
+    path('myjobslist/<int:profile>/', views.MyJobsList.as_view(), name='MyJobsList'),
+    path('mysinglejobslist/<int:pk>/', views.MySingleJobsList.as_view(), name='MySingleJobsList'),
+    path('mysinglejobslistunread/<int:job_post>/', views.MySingleJobsListUnRead.as_view(), name='MySingleJobsListUnRead'),
+    path('mysinglejobslistread/<int:job_post>/', views.MySingleJobsListRead.as_view(), name='MySingleJobsListRead'),
+    path('myapplicationlist/<int:job_post>/', views.MyApplicationList.as_view(), name='MyApplicationList'),
 ]

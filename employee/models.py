@@ -39,8 +39,9 @@ class job_Applications(models.Model):
     Experience = models.PositiveSmallIntegerField(null=True)
     currentSalary = models.IntegerField(null=True)
     ExpectedSalary = models.IntegerField(null=True)
-    description = models.TextField(null=True)
-    posted_date = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(null=True ,blank=True)
+    posted_date = models.DateTimeField(auto_now_add=True) 
+    Read = models.BooleanField(default=False)
     
 @receiver(post_save,sender=job_Applications)
 def SendingMailToEmployee(sender,instance,created,**kwargs):

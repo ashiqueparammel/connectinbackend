@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView, DestroyAPIView,RetrieveAPIView
 from .models import Education, EmployeeProfile, PersonalSkills, SavedPost, job_Applications
-from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, PersonalSkillsListSerializer, PersonalSkillsSerializer, SavePostSerializer, job_ApplicationsSerializer
+from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, MyJobsListSerializer, PersonalSkillsListSerializer, PersonalSkillsSerializer, SavePostSerializer, job_ApplicationsSerializer
 # from rest_framework.filters import SearchFilter
 
 
@@ -75,3 +75,27 @@ class job_ApplicationsListPersonal(ListAPIView):
     serializer_class = job_ApplicationsSerializer   
     def get_queryset(self):
         return job_Applications.objects.filter(profile=self.kwargs.get('profile'))
+    
+class MyApplicationList(ListAPIView):
+    serializer_class = MyJobsListSerializer   
+    def get_queryset(self):
+        return job_Applications.objects.filter(job_post=self.kwargs.get('job_post'))    
+
+class MySingleJobsList(RetrieveAPIView):
+    queryset = job_Applications.objects.all()   
+    serializer_class = MyJobsListSerializer 
+
+class MySingleJobsListRead(ListAPIView):
+    serializer_class = MyJobsListSerializer   
+    def get_queryset(self):
+        return job_Applications.objects.filter(Read=True, job_post=self.kwargs.get('job_post'))
+
+class MySingleJobsListUnRead(ListAPIView):
+    serializer_class = MyJobsListSerializer   
+    def get_queryset(self):
+        return job_Applications.objects.filter(Read=False,job_post=self.kwargs.get('job_post'))
+    
+class MyJobsList(ListAPIView):
+    serializer_class = MyJobsListSerializer   
+    def get_queryset(self):
+        return job_Applications.objects.filter(profile=self.kwargs.get('profile'))      
