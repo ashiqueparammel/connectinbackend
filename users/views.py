@@ -2,15 +2,33 @@ import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import CommonSkills, CustomUser
-from .serializers import CommonSkillsSerializer, User_Sign_Up, myTokenObtainPairSerializer, userDataSerializer
+from .models import Comments, CommonSkills, CustomUser, Like, NotInterestedPost, PublicPost, ReportPublicPost
+from .serializers import (
+    CommentsSerializer,
+    CommonSkillsSerializer,
+    LikeSerializer,
+    NotInterestedPostsSerializer,
+    PublicPostAddSerializer,
+    PublicPostListSerializer,
+    ReportPublicPostSerializer,
+    User_Sign_Up,
+    myTokenObtainPairSerializer,
+    userDataSerializer,
+)
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView,ListCreateAPIView,RetrieveUpdateAPIView
+from rest_framework.generics import (
+    GenericAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from django.http import HttpResponseRedirect
 from decouple import config
 from rest_framework.filters import SearchFilter
@@ -23,7 +41,7 @@ from rest_framework import status
 
 class Signup(APIView):
     template_name = "activation/activation_email.html"
-     
+
     def post(self, request):
         serializer = User_Sign_Up(data=request.data)
         data = request.data
@@ -66,9 +84,7 @@ class Signup(APIView):
             statusText = serializer.errors
             data = {"Text": statusText, "status": 404}
             return Response(data=data)
-        
-    
-        
+
 
 class VerifyUserView(GenericAPIView):
     def get(self, request, uidb64, token):
@@ -95,9 +111,7 @@ class VerifyUserView(GenericAPIView):
 
 
 class Google_Signup(APIView):
-    
     def post(self, request):
-        
         email = request.data.get("email")
         is_company = request.data.get("is_company")
 
@@ -124,18 +138,17 @@ class Google_Signup(APIView):
                 "status": 403,
             }
             return Response(data=data)
-        
+
         else:
             data = {"Text": serializer.errors, "status": 404}
             return Response(data=data)
-        
-class Google_login (APIView):
-    
+
+
+class Google_login(APIView):
     def post(self, request):
-        
         email = request.data.get("email")
-        
-        if CustomUser.objects.filter(email=email).exists(): 
+
+        if CustomUser.objects.filter(email=email).exists():
             access_token = request.data.get("access_token")
             Googleurl = config("GOOGLE_VERYFY")
             get_data = f"{Googleurl}access_token={access_token}"
@@ -143,7 +156,7 @@ class Google_login (APIView):
 
             if response.status_code == 200:
                 user_data = response.json()
-                check_email = user_data['email']
+                check_email = user_data["email"]
                 if check_email == email:
                     user = CustomUser.objects.get(email=email)
                     token = RefreshToken.for_user(user)
@@ -156,42 +169,43 @@ class Google_login (APIView):
                         "refresh": str(token),
                         "access": str(token.access_token),
                     }
-                    
+
                     if user.is_active:
                         data = {
-                        "message": "Your Login successfully! ",
-                        "status": 201,
-                        "token": dataa,
-                    }
+                            "message": "Your Login successfully! ",
+                            "status": 201,
+                            "token": dataa,
+                        }
                     else:
-                         data = {
-                        "message": "Your Account has been blocked ! ",
-                        "status": 202,
-                        "token": dataa,
-                    }
-                            
-                    return Response(data=data)   
+                        data = {
+                            "message": "Your Account has been blocked ! ",
+                            "status": 202,
+                            "token": dataa,
+                        }
+
+                    return Response(data=data)
             else:
                 data = {
                     "message": response.text,
                     "status": 406,
                 }
-                return Response(data=data)  
+                return Response(data=data)
         else:
             data = {
-                        "message": "This Email have no account please Create new account! ",
-                        "status": 403,
-                    }
-            return Response(data=data)     
+                "message": "This Email have no account please Create new account! ",
+                "status": 403,
+            }
+            return Response(data=data)
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = myTokenObtainPairSerializer
 
 
 class UserList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False,is_company=False)
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
     filter_backends = (SearchFilter,)
-    search_fields = ("username", "email","id","is_active","phone_number")
+    search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
 
 
@@ -203,55 +217,61 @@ class UserDetails(RetrieveUpdateAPIView):
 class CompanyList(ListAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
     filter_backends = (SearchFilter,)
-    search_fields = ("username", "email","id","is_active", "phone_number")
+    search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
 
 
 class CompanyDetails(RetrieveUpdateAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
     serializer_class = userDataSerializer
-    
+
 
 class CommonSkillsAdd(ListCreateAPIView):
-    queryset =  CommonSkills.objects.all()
+    queryset = CommonSkills.objects.all()
     filter_backends = (SearchFilter,)
-    search_fields = ('__all__')
-    serializer_class = CommonSkillsSerializer    
-    
+    search_fields = "__all__"
+    serializer_class = CommonSkillsSerializer
+
+
 class CommonSkillsUpdate(RetrieveUpdateAPIView):
-    queryset =  CommonSkills.objects.all()
-    serializer_class = CommonSkillsSerializer     
-        
+    queryset = CommonSkills.objects.all()
+    serializer_class = CommonSkillsSerializer
+
+
 class Authentication(APIView):
-    permission_classes =(IsAuthenticated,)
-    def get(self,request):
-        content={'id':str(request.user.id),'email':str(request.user.email),'is_active':str(request.user.is_active)}
-        return Response(content)  
-    
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        content = {
+            "id": str(request.user.id),
+            "email": str(request.user.email),
+            "is_active": str(request.user.is_active),
+        }
+        return Response(content)
+
 
 class logout(APIView):
-    permission_classes =(IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         try:
-            refresh_token = request.data['refresh_token']
+            refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
             token.blacklist()
 
-            return Response({'detail': 'Logout successful.'}, status=status.HTTP_200_OK)
+            return Response({"detail": "Logout successful."}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'detail': 'Invalid token.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-        
-        
-    
+            return Response(
+                {"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 class RefreshTokenAuto(APIView):
-    permission_classes =(IsAuthenticated,)
-        
-    def get(self,request):
-        user=request.user
-        
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+
         token = RefreshToken.for_user(user)
         token["email"] = user.email
         token["is_active"] = user.is_active
@@ -262,20 +282,70 @@ class RefreshTokenAuto(APIView):
             "refresh": str(token),
             "access": str(token.access_token),
         }
-        
+
         if user.is_active:
             data = {
-            "message": "Your Login successfully! ",
-            "status": 201,
-            "token": dataa,
-        }
+                "message": "Your Login successfully! ",
+                "status": 201,
+                "token": dataa,
+            }
         else:
-                data = {
-            "message": "Your Account has been blocked ! ",
-            "status": 202,
-            "token": dataa,
-        }
-                
-        return Response(data=data)       
+            data = {
+                "message": "Your Account has been blocked ! ",
+                "status": 202,
+                "token": dataa,
+            }
+
+        return Response(data=data)
 
 
+class PublicPostAdd(ListCreateAPIView):
+    queryset = PublicPost.objects.all()
+    serializer_class = PublicPostAddSerializer
+
+
+class PublicPostList(ListAPIView):
+    queryset = PublicPost.objects.filter(is_available=True)
+    serializer_class = PublicPostListSerializer
+
+
+class PublicPostUpdate(RetrieveUpdateDestroyAPIView):
+    queryset = PublicPost.objects.filter(is_available=True)
+    serializer_class = PublicPostAddSerializer
+
+
+class AddLikes(ListCreateAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    
+
+
+class UpdateLikes(RetrieveUpdateDestroyAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+
+class AddComments(ListCreateAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = CommentsSerializer
+
+
+class UpdateComments(RetrieveUpdateDestroyAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = CommentsSerializer
+
+class NotInterestedPosts(ListCreateAPIView):
+    queryset = NotInterestedPost.objects.all()
+    serializer_class = NotInterestedPostsSerializer
+    
+    
+class PublicPostReport(ListCreateAPIView):
+    queryset = ReportPublicPost.objects.all()
+    serializer_class = ReportPublicPostSerializer   
+    
+class UserSearchList(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_active=True)
+    filter_backends = [SearchFilter]
+    search_fields = ("username","email")
+    serializer_class = userDataSerializer   
+     

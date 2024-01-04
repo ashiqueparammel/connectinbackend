@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from company.serializers import JobPostListSerializer
 from users.serializers import CommonSkillsSerializer, userDataSerializer
-from .models import Education, EmployeeProfile, PersonalSkills, SavedPost, job_Applications
+from .models import Education, EmployeeProfile, PersonalSkills, ReportJobPost, SavedPost, job_Applications
 
 class EmployeeProfileSerializer(ModelSerializer):
     class Meta:
@@ -52,3 +52,18 @@ class MyJobsListSerializer(ModelSerializer):
     class Meta:
         model = job_Applications
         fields ='__all__'    
+
+
+
+class ReportJobPostSerializer(ModelSerializer):
+    
+    class Meta:
+        model = ReportJobPost
+        fields ='__all__'    
+
+class ReportJobPostListSerializer(ModelSerializer):
+    user = userDataSerializer()
+    Post = JobPostListSerializer()
+    class Meta:
+        model = ReportJobPost
+        fields ='__all__'        

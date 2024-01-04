@@ -17,5 +17,15 @@ urlpatterns = [
     path('logout/',views.logout.as_view(), name='logout'), 
     path('token/refresh/',jwt_views.TokenRefreshView.as_view(),name ='token_refresh'),
     path('refreshtoken/',views.RefreshTokenAuto.as_view(),name ='RefreshTokenAuto'),
+    path('publicpostadd/',views.PublicPostAdd.as_view(),name ='PublicPostAdd'),
+    path('publicpostlist/',views.PublicPostList.as_view(),name ='PublicPostList'),
+    path('publicpostupdate/<int:pk>/',views.PublicPostUpdate.as_view(),name ='PublicPostUpdate'),
+    path('addlikes/',views.AddLikes.as_view(),name ='AddLikes'),
+    path('updatelikes/<int:pk>/',views.UpdateLikes.as_view(),name ='UpdateLikes'),
+    path('addcomments/',views.AddComments.as_view(),name ='AddComments'),
+    path('updatecomments/<int:pk>/',views.UpdateComments.as_view(),name ='UpdateComments'),
+    path('notinterestedposts/',views.NotInterestedPosts.as_view(),name ='NotInterestedPosts'),
+    path('publicpostreport/',views.PublicPostReport.as_view(),name ='PublicPostReport'),
+    path('usersearchlist/',views.UserSearchList.as_view(),name ='UserSearchList'),
      
 ]

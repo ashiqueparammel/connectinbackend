@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView, DestroyAPIView,RetrieveAPIView
-from .models import Education, EmployeeProfile, PersonalSkills, SavedPost, job_Applications
-from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, MyJobsListSerializer, PersonalSkillsListSerializer, PersonalSkillsSerializer, SavePostSerializer, job_ApplicationsSerializer
+from .models import Education, EmployeeProfile, PersonalSkills, ReportJobPost, SavedPost, job_Applications
+from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, MyJobsListSerializer, PersonalSkillsListSerializer, PersonalSkillsSerializer, ReportJobPostListSerializer, ReportJobPostSerializer, SavePostSerializer, job_ApplicationsSerializer
 # from rest_framework.filters import SearchFilter
 
 
@@ -99,3 +99,12 @@ class MyJobsList(ListAPIView):
     serializer_class = MyJobsListSerializer   
     def get_queryset(self):
         return job_Applications.objects.filter(profile=self.kwargs.get('profile'))      
+
+class ReportJobPostAdd(ListCreateAPIView):
+    queryset = ReportJobPost.objects.all()   
+    serializer_class = ReportJobPostSerializer   
+    
+    
+class ReportJobPostList(ListCreateAPIView):
+    queryset = ReportJobPost.objects.all()   
+    serializer_class = ReportJobPostListSerializer    

@@ -60,4 +60,9 @@ def SendingMailToEmployee(sender,instance,created,**kwargs):
         recipient_list = [userEmail] 
         send_mail(subject,message, from_email, recipient_list, fail_silently=True)
 
-        
+
+class ReportJobPost(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    Post = models.ForeignKey(JobPost, on_delete=models.CASCADE)
+    Reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)        
