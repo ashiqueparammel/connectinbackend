@@ -1,9 +1,10 @@
 from django.db import models
 from company.models import JobPost
+from employee.tasks import JobApplySendingMail
 from users.models import CommonSkills, CustomUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.core.mail import send_mail
+
 
 # Create your models here.
 
@@ -46,19 +47,13 @@ class job_Applications(models.Model):
 @receiver(post_save,sender=job_Applications)
 def SendingMailToEmployee(sender,instance,created,**kwargs):
     if created:
-        userEmail = instance.profile.user.email
         username = instance.profile.user.username
+        userEmail = instance.profile.user.email
         jobName = instance.job_post.Job_title
         CompanyName = instance.job_post.company.company_name
         # print(userEmail, username, jobName, CompanyName, 'check this signal working or not  ==============>>>>>>>>>>>>.')
-        subject ="Connect in | Job Application Status"
+        JobApplySendingMail(username,jobName,CompanyName,userEmail)
         
-        message = f"""Hy {username}. Your Job Application has been sent successfully.
-                Your selected position: {jobName} in {CompanyName} Company.
-                Thank you for choosing Connect in Company. Contact us within a week."""
-        from_email = "cootinternational@gmail.com"
-        recipient_list = [userEmail] 
-        send_mail(subject,message, from_email, recipient_list, fail_silently=True)
 
 
 class ReportJobPost(models.Model):

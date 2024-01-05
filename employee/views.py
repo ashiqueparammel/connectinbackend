@@ -1,5 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView, DestroyAPIView,RetrieveAPIView
+
+from employee.tasks import test_func
 from .models import Education, EmployeeProfile, PersonalSkills, ReportJobPost, SavedPost, job_Applications
 from .serializers import DetailSavePostSerializer, EducationSerializer, EmployeeProfileDetail_Serializer, EmployeeProfileSerializer, MyJobsListSerializer, PersonalSkillsListSerializer, PersonalSkillsSerializer, ReportJobPostListSerializer, ReportJobPostSerializer, SavePostSerializer, job_ApplicationsSerializer
 # from rest_framework.filters import SearchFilter
@@ -107,4 +110,9 @@ class ReportJobPostAdd(ListCreateAPIView):
     
 class ReportJobPostList(ListCreateAPIView):
     queryset = ReportJobPost.objects.all()   
-    serializer_class = ReportJobPostListSerializer    
+    serializer_class = ReportJobPostListSerializer 
+    
+    
+def test (request):
+    test_func.delay()
+    return HttpResponse("Done")       

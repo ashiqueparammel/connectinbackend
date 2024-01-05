@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
 
 
 class CustomUser(AbstractUser):
@@ -22,37 +23,36 @@ class CommonSkills(models.Model):
     skills = models.CharField(max_length=250, unique=True)
 
 
-class PublicPost(models.Model):
+class TimestampedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True,null=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True)
+
+    class Meta:
+        abstract = True
+
+class PublicPost(TimestampedModel):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     Post_Image = models.ImageField(upload_to="post", blank=True, null=True)
     description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
     is_available = models.BooleanField(default=True)
 
-
-class Like(models.Model):
+class PublicPostCommon(TimestampedModel):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     Post = models.ForeignKey(PublicPost, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        abstract = True
 
+class Like(PublicPostCommon):
+    pass
 
-class Comments(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    Post = models.ForeignKey(
-        PublicPost, on_delete=models.CASCADE, related_name="comments"
-    )
+class Comments(PublicPostCommon):
+    Post = models.ForeignKey(PublicPost, on_delete=models.CASCADE, related_name="commentss")
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
+class NotInterestedPost(PublicPostCommon):
+    pass
 
-class NotInterestedPost(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    Post = models.ForeignKey(PublicPost, on_delete=models.CASCADE)
-
-
-class ReportPublicPost(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    Post = models.ForeignKey(PublicPost, on_delete=models.CASCADE)
+class ReportPublicPost(PublicPostCommon):
     Reason = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
