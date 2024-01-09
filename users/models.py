@@ -56,3 +56,6 @@ class NotInterestedPost(PublicPostCommon):
 
 class ReportPublicPost(PublicPostCommon):
     Reason = models.TextField()
+
+class PublicPostSaved(PublicPostCommon):
+    pass

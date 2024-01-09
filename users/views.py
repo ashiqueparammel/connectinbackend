@@ -304,9 +304,23 @@ class PublicPostAdd(ListCreateAPIView):
     serializer_class = PublicPostAddSerializer
 
 
+# class PublicPostList(ListAPIView):
+#     CheckPublicPost = PublicPost.objects.filter(is_available=True)
+#     serializer_class = PublicPostListSerializer
+
+
+
 class PublicPostList(ListAPIView):
-    queryset = PublicPost.objects.filter(is_available=True)
     serializer_class = PublicPostListSerializer
+    def get_queryset(self):
+        user_id = self.kwargs.get('user')
+        not_id = NotInterestedPost.objects.filter(user=user_id).values_list('Post__id', flat=True)
+        queryset = PublicPost.objects.filter(is_available=True).exclude(id__in=not_id)
+        return queryset
+
+        
+    
+    
 
 
 class PublicPostUpdate(RetrieveUpdateDestroyAPIView):
@@ -337,11 +351,19 @@ class UpdateComments(RetrieveUpdateDestroyAPIView):
 class NotInterestedPosts(ListCreateAPIView):
     queryset = NotInterestedPost.objects.all()
     serializer_class = NotInterestedPostsSerializer
+     
+    
+    
     
     
 class PublicPostReport(ListCreateAPIView):
     queryset = ReportPublicPost.objects.all()
     serializer_class = ReportPublicPostSerializer   
+    
+class PublicPostReportUser(ListCreateAPIView):
+    serializer_class = ReportPublicPostSerializer  
+    def get_queryset(self):
+        return ReportPublicPost.objects.filter(user=self.kwargs.get('user'))     
     
 class UserSearchList(ListAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_active=True)

@@ -111,6 +111,8 @@ class ReportJobPostAdd(ListCreateAPIView):
 class ReportJobPostList(ListCreateAPIView):
     queryset = ReportJobPost.objects.all()   
     serializer_class = ReportJobPostListSerializer 
+
+    
     
     
 def test (request):

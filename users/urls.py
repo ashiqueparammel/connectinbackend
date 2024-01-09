@@ -18,7 +18,7 @@ urlpatterns = [
     path('token/refresh/',jwt_views.TokenRefreshView.as_view(),name ='token_refresh'),
     path('refreshtoken/',views.RefreshTokenAuto.as_view(),name ='RefreshTokenAuto'),
     path('publicpostadd/',views.PublicPostAdd.as_view(),name ='PublicPostAdd'),
-    path('publicpostlist/',views.PublicPostList.as_view(),name ='PublicPostList'),
+    path('publicpostlist/<int:user>/',views.PublicPostList.as_view(),name ='PublicPostList'),
     path('publicpostupdate/<int:pk>/',views.PublicPostUpdate.as_view(),name ='PublicPostUpdate'),
     path('addlikes/',views.AddLikes.as_view(),name ='AddLikes'),
     path('updatelikes/<int:pk>/',views.UpdateLikes.as_view(),name ='UpdateLikes'),
@@ -26,6 +26,7 @@ urlpatterns = [
     path('updatecomments/<int:pk>/',views.UpdateComments.as_view(),name ='UpdateComments'),
     path('notinterestedposts/',views.NotInterestedPosts.as_view(),name ='NotInterestedPosts'),
     path('publicpostreport/',views.PublicPostReport.as_view(),name ='PublicPostReport'),
+    path('publicpostreportuser/<int:user>/',views.PublicPostReportUser.as_view(),name ='PublicPostReportUser'),
     path('usersearchlist/',views.UserSearchList.as_view(),name ='UserSearchList'),
      
 ]
