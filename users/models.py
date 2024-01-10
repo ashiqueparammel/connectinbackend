@@ -35,6 +35,8 @@ class PublicPost(TimestampedModel):
     Post_Image = models.ImageField(upload_to="post", blank=True, null=True)
     description = models.TextField(null=True, blank=True)
     likes = models.IntegerField(default=0)
+    Comments = models.IntegerField(default=0)
+    
     is_available = models.BooleanField(default=True)
 
 class PublicPostCommon(TimestampedModel):

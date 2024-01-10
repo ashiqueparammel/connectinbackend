@@ -93,7 +93,11 @@ class CommentsSerializer(ModelSerializer):
     class Meta:
         model = Comments
         fields = "__all__"
-
+class CommentsListSerializer(ModelSerializer):
+    user =userDataSerializer()
+    class Meta:
+        model = Comments
+        fields = "__all__"
 
 class NotInterestedPostsSerializer(ModelSerializer):
     class Meta:

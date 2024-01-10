@@ -2,8 +2,18 @@ import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Comments, CommonSkills, CustomUser, Like, NotInterestedPost, PublicPost, ReportPublicPost
+from django.shortcuts import get_object_or_404
+from .models import (
+    Comments,
+    CommonSkills,
+    CustomUser,
+    Like,
+    NotInterestedPost,
+    PublicPost,
+    ReportPublicPost,
+)
 from .serializers import (
+    CommentsListSerializer,
     CommentsSerializer,
     CommonSkillsSerializer,
     LikeSerializer,
@@ -309,18 +319,16 @@ class PublicPostAdd(ListCreateAPIView):
 #     serializer_class = PublicPostListSerializer
 
 
-
 class PublicPostList(ListAPIView):
     serializer_class = PublicPostListSerializer
+
     def get_queryset(self):
-        user_id = self.kwargs.get('user')
-        not_id = NotInterestedPost.objects.filter(user=user_id).values_list('Post__id', flat=True)
+        user_id = self.kwargs.get("user")
+        not_id = NotInterestedPost.objects.filter(user=user_id).values_list(
+            "Post__id", flat=True
+        )
         queryset = PublicPost.objects.filter(is_available=True).exclude(id__in=not_id)
         return queryset
-
-        
-    
-    
 
 
 class PublicPostUpdate(RetrieveUpdateDestroyAPIView):
@@ -328,46 +336,123 @@ class PublicPostUpdate(RetrieveUpdateDestroyAPIView):
     serializer_class = PublicPostAddSerializer
 
 
-class AddLikes(ListCreateAPIView):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializer
-    
-
-
-class UpdateLikes(RetrieveUpdateDestroyAPIView):
-    queryset = Like.objects.all()
+class AddLikes(APIView):
     serializer_class = LikeSerializer
 
+    def post(self, request):
+        user_id = int(request.data.get("user"))
+        post_id = int(request.data.get("Post"))
+        user = get_object_or_404(CustomUser, id=user_id)
+        post = get_object_or_404(PublicPost, id=post_id)
+        post.likes += 1
+        post.save()
+        add_like = Like(user=user, Post=post)
+        add_like.save()
+        data = {
+            "Text": "Liked Added",
+            "status": 201,
+        }
+        return Response(data=data)
 
-class AddComments(ListCreateAPIView):
-    queryset = Comments.objects.all()
+
+class UpdateLikes(APIView):
+    serializer_class = LikeSerializer
+
+    def post(self, request):
+        user_id = int(request.data.get("user"))
+        post_id = int(request.data.get("Post"))
+        user_id = get_object_or_404(CustomUser, id=user_id)
+        post_id = get_object_or_404(PublicPost, id=post_id)
+        RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
+        post_id.likes -= 1
+        post_id.save()
+        RemoveLike.delete()
+        data = {
+            "Text": "Liked Removed",
+            "status": 201,
+        }
+        return Response(data=data)
+
+    # queryset = Like.objects.all()
+
+
+class AddComments(APIView):
     serializer_class = CommentsSerializer
+
+    def post(self, request):
+        user_id = int(request.data.get("user"))
+        post_id = int(request.data.get("Post"))
+        text = request.data.get("content")
+        user_id = get_object_or_404(CustomUser, id=user_id)
+        post = get_object_or_404(PublicPost, id=post_id)
+        post.Comments += 1
+        post.save()
+        add_Comments = Comments(user=user_id, Post=post, content=text)
+        add_Comments.save()
+        data = {
+            "Text": "Comments Added",
+            "status": 201,
+        }
+        return Response(data=data)
+
+
+class RemoveComments(APIView):
+    serializer_class = CommentsSerializer
+    def post(self, request):
+        user_id = int(request.data.get("user"))
+        post_id = int(request.data.get("Post"))
+        comment_Id = int(request.data.get("comment_id"))
+        user_id = get_object_or_404(CustomUser, id=user_id)
+        post = get_object_or_404(PublicPost, id=post_id)
+        RemoveComments = get_object_or_404(Comments,id=comment_Id, Post=post_id, user=user_id)
+        post.Comments -= 1
+        post.save()
+        RemoveComments.delete()
+        data = {
+            "Text": "Comments Removed",
+            "status": 201,
+        }
+        return Response(data=data)
+
+
+class PostListComments(ListAPIView):
+    serializer_class = CommentsListSerializer
+
+    def get_queryset(self):
+        return Comments.objects.filter(Post=self.kwargs.get("post"))
 
 
 class UpdateComments(RetrieveUpdateDestroyAPIView):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
 
+
 class NotInterestedPosts(ListCreateAPIView):
     queryset = NotInterestedPost.objects.all()
     serializer_class = NotInterestedPostsSerializer
-     
-    
-    
-    
-    
+
+
+class ListUserLikes(ListAPIView):
+    serializer_class = LikeSerializer
+
+    def get_queryset(self):
+        return Like.objects.filter(user=self.kwargs.get("user"))
+
+
 class PublicPostReport(ListCreateAPIView):
     queryset = ReportPublicPost.objects.all()
-    serializer_class = ReportPublicPostSerializer   
-    
+    serializer_class = ReportPublicPostSerializer
+
+
 class PublicPostReportUser(ListCreateAPIView):
-    serializer_class = ReportPublicPostSerializer  
+    serializer_class = ReportPublicPostSerializer
+
     def get_queryset(self):
-        return ReportPublicPost.objects.filter(user=self.kwargs.get('user'))     
-    
+        return ReportPublicPost.objects.filter(user=self.kwargs.get("user"))
+
+
 class UserSearchList(ListAPIView):
     queryset = CustomUser.objects.filter(is_superuser=False, is_active=True)
     filter_backends = [SearchFilter]
-    search_fields = ("username","email")
-    serializer_class = userDataSerializer   
-     
+    search_fields = ("username", "email")
+    serializer_class = userDataSerializer

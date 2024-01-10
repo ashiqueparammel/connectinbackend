@@ -21,12 +21,15 @@ urlpatterns = [
     path('publicpostlist/<int:user>/',views.PublicPostList.as_view(),name ='PublicPostList'),
     path('publicpostupdate/<int:pk>/',views.PublicPostUpdate.as_view(),name ='PublicPostUpdate'),
     path('addlikes/',views.AddLikes.as_view(),name ='AddLikes'),
-    path('updatelikes/<int:pk>/',views.UpdateLikes.as_view(),name ='UpdateLikes'),
+    path('updatelikes/',views.UpdateLikes.as_view(),name ='UpdateLikes'),
     path('addcomments/',views.AddComments.as_view(),name ='AddComments'),
+    path('postlistcomments/<int:post>/',views.PostListComments.as_view(),name ='PostListComments'),
     path('updatecomments/<int:pk>/',views.UpdateComments.as_view(),name ='UpdateComments'),
     path('notinterestedposts/',views.NotInterestedPosts.as_view(),name ='NotInterestedPosts'),
     path('publicpostreport/',views.PublicPostReport.as_view(),name ='PublicPostReport'),
     path('publicpostreportuser/<int:user>/',views.PublicPostReportUser.as_view(),name ='PublicPostReportUser'),
     path('usersearchlist/',views.UserSearchList.as_view(),name ='UserSearchList'),
+    path('listuserlikes/<int:user>/',views.ListUserLikes.as_view(),name ='ListUserLikes'),
+    path('removecomments/',views.RemoveComments.as_view(),name ='RemoveComments'),
      
 ]
