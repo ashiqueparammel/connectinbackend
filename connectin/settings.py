@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
     'users',
     'company',
     'employee',
+    'chat',
+    
     
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
@@ -114,7 +118,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # mannually added user 
 AUTH_USER_MODEL = 'users.CustomUser'
-  
+
+WSGI_APPLICATION = 'connectin.wsgi.application'
+ASGI_APPLICATION ='connectin.asgi.application'
   
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -192,6 +198,14 @@ SIMPLE_JWT = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

@@ -18,6 +18,7 @@ class CompanyList(ListAPIView):
     serializer_class = CompanyListSerializer    
     
 class CompanyUpdate(RetrieveUpdateAPIView):
+    
     queryset = Company.objects.all() 
     serializer_class = CompanySerializer   
     
