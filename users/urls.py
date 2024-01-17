@@ -31,5 +31,6 @@ urlpatterns = [
     path('usersearchlist/',views.UserSearchList.as_view(),name ='UserSearchList'),
     path('listuserlikes/<int:user>/',views.ListUserLikes.as_view(),name ='ListUserLikes'),
     path('removecomments/',views.RemoveComments.as_view(),name ='RemoveComments'),
+    path('publicreportlistall/',views.publicReportListAll.as_view(),name ='publicReportListAll'),
      
 ]

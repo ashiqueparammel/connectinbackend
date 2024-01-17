@@ -20,6 +20,7 @@ from .serializers import (
     NotInterestedPostsSerializer,
     PublicPostAddSerializer,
     PublicPostListSerializer,
+    ReportPublicPostListSerializer,
     ReportPublicPostSerializer,
     User_Sign_Up,
     myTokenObtainPairSerializer,
@@ -332,7 +333,7 @@ class PublicPostList(ListAPIView):
 
 
 class PublicPostUpdate(RetrieveUpdateDestroyAPIView):
-    queryset = PublicPost.objects.filter(is_available=True)
+    queryset = PublicPost.objects.all()
     serializer_class = PublicPostAddSerializer
 
 
@@ -443,7 +444,10 @@ class PublicPostReport(ListCreateAPIView):
     queryset = ReportPublicPost.objects.all()
     serializer_class = ReportPublicPostSerializer
 
-
+class publicReportListAll(ListAPIView):
+    queryset = ReportPublicPost.objects.all()
+    serializer_class = ReportPublicPostListSerializer
+    
 class PublicPostReportUser(ListCreateAPIView):
     serializer_class = ReportPublicPostSerializer
 

@@ -108,3 +108,10 @@ class ReportPublicPostSerializer(ModelSerializer):
     class Meta:
         model = ReportPublicPost
         fields = "__all__"
+
+class ReportPublicPostListSerializer(ModelSerializer):        
+    Post = PublicPostListSerializer()
+    user =userDataSerializer()
+    class Meta:
+        model = ReportPublicPost
+        fields = "__all__"

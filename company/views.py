@@ -56,7 +56,7 @@ class JobUserView(RetrieveUpdateAPIView):
     serializer_class = JobPostListSerializer        
 
 class JobUpdate(RetrieveUpdateAPIView):
-    queryset =JobPost.objects.filter(is_available=True)   
+    queryset =JobPost.objects.all()
     serializer_class = JobPostSerializer  
 
 class JobList(ListAPIView):    
