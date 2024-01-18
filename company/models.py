@@ -28,8 +28,9 @@ class JobPost(models.Model):
     job_type = models.CharField(max_length=250)
     salary = models.CharField(max_length=250)
     posted_date = models.DateTimeField(auto_now_add=True)
-    is_available =models.BooleanField(default=True)
-    Openings =models.IntegerField(null=True)
+    is_available = models.BooleanField(default=True)
+    Openings = models.IntegerField(null=True)
+    ApplicationCount = models.IntegerField(default=0)
     
 class Required_Skills(models.Model):
     Job_post=models.ForeignKey(JobPost,on_delete=models.CASCADE,related_name='required_skills')
