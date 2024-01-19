@@ -24,5 +24,5 @@ urlpatterns = [
     path('mysinglejobslistread/<int:job_post>/', views.MySingleJobsListRead.as_view(), name='MySingleJobsListRead'),
     path('myapplicationlist/<int:job_post>/', views.MyApplicationList.as_view(), name='MyApplicationList'),
     path('reportjobpostadd/', views.ReportJobPostAdd.as_view(), name='ReportJobPostAdd'),
-    path('reportjobpostlist/', views.ReportJobPostList.as_view(), name='ReportJobPostList'),
+    path('reportjobpostlist/', views.ReportJobPostList.as_view(), name='ReportJobPostList')
 ]

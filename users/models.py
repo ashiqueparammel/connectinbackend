@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save,pre_delete
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=250)
@@ -72,3 +73,51 @@ class Notifications(models.Model):
     def __str__(self):
 
         return self.text
+    
+
+class Follow(models.Model):
+    followers = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name ="following")
+    following = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name ="followers")
+    Connection = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together=['followers','following']
+    
+    def __str__(self):
+        return f"{self.followers.email} follows {self.following.email}"
+    
+    
+@receiver(post_save, sender=Follow)
+def Check_Connection(sender, instance, created, **kwargs):
+    if created:
+        followers = instance.followers
+        following = instance.following
+        if Follow.objects.filter(followers=following, following=followers).exists():
+            if Follow.objects.filter(followers=followers, following=following).exists():
+                update_data = Follow.objects.get(followers=following, following=followers)
+                update_data.Connection = True
+                update_data.save()
+                update_data1 = Follow.objects.get(followers=followers, following=following)
+                update_data1.Connection = True
+                update_data1.save()
+            
+            
+
+
+# @receiver(pre_delete, sender=Follow)
+# def check_connection_after(sender, instance, **kwargs):
+#     followers = instance.followers
+#     following = instance.following
+
+#     if Follow.objects.filter(followers=following, following=followers).exists():
+#         update_data = Follow.objects.get(followers=following, following=followers)
+#         update_data.connection = False
+#         update_data.save()
+#     if Follow.objects.filter(followers=followers, following=following).exists():
+#         update_data1 = Follow.objects.get(followers=followers, following=following)
+#         update_data1.connection = False
+#         update_data1.save()
+
+                        
+           
+       

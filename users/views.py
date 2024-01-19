@@ -7,6 +7,7 @@ from .models import (
     Comments,
     CommonSkills,
     CustomUser,
+    Follow,
     Like,
     NotInterestedPost,
     PublicPost,
@@ -23,6 +24,8 @@ from .serializers import (
     ReportPublicPostListSerializer,
     ReportPublicPostSerializer,
     User_Sign_Up,
+    UserFollowListSerializer,
+    UserFollowSerializer,
     myTokenObtainPairSerializer,
     userDataSerializer,
 )
@@ -39,6 +42,7 @@ from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateAPIView,
     RetrieveUpdateDestroyAPIView,
+    RetrieveAPIView,
 )
 from django.http import HttpResponseRedirect
 from decouple import config
@@ -315,11 +319,6 @@ class PublicPostAdd(ListCreateAPIView):
     serializer_class = PublicPostAddSerializer
 
 
-# class PublicPostList(ListAPIView):
-#     CheckPublicPost = PublicPost.objects.filter(is_available=True)
-#     serializer_class = PublicPostListSerializer
-
-
 class PublicPostList(ListAPIView):
     serializer_class = PublicPostListSerializer
 
@@ -399,13 +398,16 @@ class AddComments(APIView):
 
 class RemoveComments(APIView):
     serializer_class = CommentsSerializer
+
     def post(self, request):
         user_id = int(request.data.get("user"))
         post_id = int(request.data.get("Post"))
         comment_Id = int(request.data.get("comment_id"))
         user_id = get_object_or_404(CustomUser, id=user_id)
         post = get_object_or_404(PublicPost, id=post_id)
-        RemoveComments = get_object_or_404(Comments,id=comment_Id, Post=post_id, user=user_id)
+        RemoveComments = get_object_or_404(
+            Comments, id=comment_Id, Post=post_id, user=user_id
+        )
         post.Comments -= 1
         post.save()
         RemoveComments.delete()
@@ -444,10 +446,12 @@ class PublicPostReport(ListCreateAPIView):
     queryset = ReportPublicPost.objects.all()
     serializer_class = ReportPublicPostSerializer
 
+
 class publicReportListAll(ListAPIView):
     queryset = ReportPublicPost.objects.all()
     serializer_class = ReportPublicPostListSerializer
-    
+
+
 class PublicPostReportUser(ListCreateAPIView):
     serializer_class = ReportPublicPostSerializer
 
@@ -460,3 +464,42 @@ class UserSearchList(ListAPIView):
     filter_backends = [SearchFilter]
     search_fields = ("username", "email")
     serializer_class = userDataSerializer
+
+
+class UserProfileView(RetrieveAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_active=True)
+    serializer_class = userDataSerializer
+
+
+class UserFollow(ListCreateAPIView):
+    queryset = Follow.objects.all()
+    serializer_class = UserFollowSerializer
+
+class UserUnFollow(RetrieveUpdateDestroyAPIView):
+    queryset = Follow.objects.all()
+    serializer_class = UserFollowSerializer    
+
+
+class UserFollowing(ListAPIView):
+    serializer_class = UserFollowListSerializer
+
+    def get_queryset(self):
+        user = self.kwargs.get("user")
+        return Follow.objects.filter(followers=user)
+
+
+class UserFollowers(ListAPIView):
+    serializer_class = UserFollowListSerializer
+
+    def get_queryset(self):
+        user = self.kwargs.get("user")
+        return Follow.objects.filter(following=user)
+    
+    
+class ConnectionChatList(ListAPIView):
+    serializer_class = UserFollowListSerializer
+    def get_queryset(self):
+        user = self.kwargs.get("user")
+        return Follow.objects.filter(followers=user,Connection=True,)
+    
+        

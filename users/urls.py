@@ -32,5 +32,11 @@ urlpatterns = [
     path('listuserlikes/<int:user>/',views.ListUserLikes.as_view(),name ='ListUserLikes'),
     path('removecomments/',views.RemoveComments.as_view(),name ='RemoveComments'),
     path('publicreportlistall/',views.publicReportListAll.as_view(),name ='publicReportListAll'),
+    path('userprofileview/<int:pk>/',views.UserProfileView.as_view(),name ='UserProfileView'),
+    path('userfollow/',views.UserFollow.as_view(),name ='UserFollow'),
+    path('userfollowing/<int:user>/',views.UserFollowing.as_view(),name ='UserFollowing'),
+    path('userfollowers/<int:user>/',views.UserFollowers.as_view(),name ='UserFollowers'),
+    path('connectionchatlist/<int:user>/',views.ConnectionChatList.as_view(),name ='ConnectionChatList'),
+    path('userunfollow/<int:pk>/',views.UserUnFollow.as_view(),name ='UserUnFollow')
      
 ]
