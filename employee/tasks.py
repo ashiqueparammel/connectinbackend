@@ -16,3 +16,15 @@ def JobApplySendingMail(username,jobName,CompanyName,userEmail):
     from_email = "cootinternational@gmail.com"
     recipient_list = [userEmail] 
     send_mail(subject,message, from_email, recipient_list, fail_silently=True)
+    
+    
+@shared_task
+def JobBlockSendingMail(username,JobName,CompanyName,userEmail):
+    subject ="Connect in | Job Application Status"
+        
+    message = f"""Hy {username}. We are really sorry , Your Applied {JobName} Application UnAvailabe , That Job is blocked by Connectin team 
+    that job was fake  we got report from userside and we check that job {JobName} details and company{CompanyName} .and we find {JobName} job is fake .
+            Thank you for choosing Connect in Company."""
+    from_email = "cootinternational@gmail.com"
+    recipient_list = [userEmail] 
+    send_mail(subject,message, from_email, recipient_list, fail_silently=True)    

@@ -41,6 +41,7 @@ class job_Applications(models.Model):
     Read = models.BooleanField(default=False)
     ApplicationStatus = models.CharField(default='Pending')
     Updated = models.BooleanField(default=False)
+    is_available =models.BooleanField(default=True)
     
 
 class ReportJobPost(models.Model):
