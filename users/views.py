@@ -327,7 +327,7 @@ class PublicPostList(ListAPIView):
         not_id = NotInterestedPost.objects.filter(user=user_id).values_list(
             "Post__id", flat=True
         )
-        queryset = PublicPost.objects.filter(is_available=True).exclude(id__in=not_id)
+        queryset = PublicPost.objects.filter(is_available=True).exclude(id__in=not_id).order_by('id')
         return queryset
 
 
