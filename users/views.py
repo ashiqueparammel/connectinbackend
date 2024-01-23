@@ -502,4 +502,18 @@ class ConnectionChatList(ListAPIView):
         user = self.kwargs.get("user")
         return Follow.objects.filter(followers=user,Connection=True,)
     
+    
+class AdmindashBoardCount(ListAPIView):
+    serializer_class = userDataSerializer
+    def get_queryset(self):
+        Company_Active_Count = CustomUser.objects.filter(is_superuser=False,is_active=True, is_company=True).count()
+        User_Active_Count = CustomUser.objects.filter(is_superuser=False,is_active=True, is_company=False).count()
+        Total_Company_Count = CustomUser.objects.filter(is_superuser=False, is_company=True).count()
+        Total_User_Count = CustomUser.objects.filter(is_superuser=False, is_company=False).count()
+        data = {'CompanyTotalCount':Total_Company_Count,'Company_Active_Count':Company_Active_Count,
+                'Total_User_Count':Total_User_Count,'User_Active_Count':User_Active_Count, "status": 200}
+        return Response(data=data)
+        
+    
+      
         
