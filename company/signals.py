@@ -43,11 +43,6 @@ def  JobPostBlock(sender, instance, created, **kwargs):
         job_Applications.objects.filter(job_post=instance).update(is_available=True)
         
        
-    
-    # print(type(Mail_Send_Users),'====================<<<<<<<<<<<<<<<<<<<<<<<<<')
+
     # JobBlockSendingMail(users.profile.user.username,instance.Job_title,instance.company.company_name,users.profile.user.email)
-    # print(JobName,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-    # print(Mail_Send_Users, "=======================================")
-    # print(userEmail, username, jobName, CompanyName, 'check this signal working or not  ==============>>>>>>>>>>>>.')
-        
 

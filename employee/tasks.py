@@ -1,4 +1,4 @@
-from celery import shared_task 
+from celery import shared_task, chain
 from django.core.mail import send_mail
 from asgiref.sync import sync_to_async
 @shared_task(bind=True)
@@ -18,7 +18,7 @@ def JobApplySendingMail(username,jobName,CompanyName,userEmail):
     recipient_list = [userEmail] 
     send_mail(subject,message, from_email, recipient_list, fail_silently=True)
     
-@shared_task()
+@shared_task
 def JobBlockSendingMail(username,JobName,CompanyName,userEmail):
     for i in range(len(username)):
         
