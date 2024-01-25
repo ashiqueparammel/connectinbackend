@@ -81,6 +81,19 @@ class Follow(models.Model):
     
     def __str__(self):
         return f"{self.followers.email} follows {self.following.email}"
+    
+    
+    
+    
+class UsersNotifications(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='sent_notifications')
+    NotifyUser= models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='received_notifications',default=None)
+    text=models.CharField(max_length=200)
+    created_at=models.DateTimeField(auto_now_add=True)
+    is_read=models.BooleanField(default=False)
+    NotificationsType = models.CharField(max_length=200)
+
+
        
 
            

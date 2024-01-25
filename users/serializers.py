@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Comments, CommonSkills, CustomUser, Follow, Like, NotInterestedPost, PublicPost, ReportPublicPost
+from .models import Comments, CommonSkills, CustomUser, Follow, Like, NotInterestedPost, PublicPost, ReportPublicPost, UsersNotifications
 
 
 class User_Sign_Up(ModelSerializer):
@@ -127,4 +127,13 @@ class UserFollowListSerializer(ModelSerializer):
     following = userDataSerializer()
     class Meta:
         model = Follow
-        fields = "__all__"                
+        fields = "__all__"           
+        
+class NotificationListSerializer(ModelSerializer):
+    NotifyUser = userDataSerializer()
+    class Meta:
+        model = UsersNotifications
+        fields = "__all__"               
+        
+        
+

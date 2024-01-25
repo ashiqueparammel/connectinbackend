@@ -37,6 +37,8 @@ urlpatterns = [
     path('userfollowing/<int:user>/',views.UserFollowing.as_view(),name ='UserFollowing'),
     path('userfollowers/<int:user>/',views.UserFollowers.as_view(),name ='UserFollowers'),
     path('connectionchatlist/<int:user>/',views.ConnectionChatList.as_view(),name ='ConnectionChatList'),
-    path('userunfollow/<int:pk>/',views.UserUnFollow.as_view(),name ='UserUnFollow')
+    path('userunfollow/<int:pk>/',views.UserUnFollow.as_view(),name ='UserUnFollow'),
+    path('admindashboardcount/',views.AdmindashBoardCount.as_view(),name ='AdmindashBoardCount'),
+    path('notificationlistinguser/<int:user>/',views.NotificationListingUser.as_view(),name ='NotificationListingUser')
      
 ]

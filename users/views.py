@@ -12,6 +12,7 @@ from .models import (
     NotInterestedPost,
     PublicPost,
     ReportPublicPost,
+    UsersNotifications,
 )
 from .serializers import (
     CommentsListSerializer,
@@ -19,6 +20,7 @@ from .serializers import (
     CommonSkillsSerializer,
     LikeSerializer,
     NotInterestedPostsSerializer,
+    NotificationListSerializer,
     PublicPostAddSerializer,
     PublicPostListSerializer,
     ReportPublicPostListSerializer,
@@ -327,7 +329,11 @@ class PublicPostList(ListAPIView):
         not_id = NotInterestedPost.objects.filter(user=user_id).values_list(
             "Post__id", flat=True
         )
-        queryset = PublicPost.objects.filter(is_available=True).exclude(id__in=not_id).order_by('id')
+        queryset = (
+            PublicPost.objects.filter(is_available=True)
+            .exclude(id__in=not_id)
+            .order_by("id")
+        )
         return queryset
 
 
@@ -475,9 +481,10 @@ class UserFollow(ListCreateAPIView):
     queryset = Follow.objects.all()
     serializer_class = UserFollowSerializer
 
+
 class UserUnFollow(RetrieveUpdateDestroyAPIView):
     queryset = Follow.objects.all()
-    serializer_class = UserFollowSerializer    
+    serializer_class = UserFollowSerializer
 
 
 class UserFollowing(ListAPIView):
@@ -494,26 +501,27 @@ class UserFollowers(ListAPIView):
     def get_queryset(self):
         user = self.kwargs.get("user")
         return Follow.objects.filter(following=user)
-    
-    
+
+
 class ConnectionChatList(ListAPIView):
     serializer_class = UserFollowListSerializer
+
     def get_queryset(self):
         user = self.kwargs.get("user")
-        return Follow.objects.filter(followers=user,Connection=True,)
-    
-    
+        return Follow.objects.filter(
+            followers=user,
+            Connection=True,
+        )
+
+
 class AdmindashBoardCount(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False)
     serializer_class = userDataSerializer
+
+
+class NotificationListingUser(ListAPIView):
+    serializer_class = NotificationListSerializer
+
     def get_queryset(self):
-        Company_Active_Count = CustomUser.objects.filter(is_superuser=False,is_active=True, is_company=True).count()
-        User_Active_Count = CustomUser.objects.filter(is_superuser=False,is_active=True, is_company=False).count()
-        Total_Company_Count = CustomUser.objects.filter(is_superuser=False, is_company=True).count()
-        Total_User_Count = CustomUser.objects.filter(is_superuser=False, is_company=False).count()
-        data = {'CompanyTotalCount':Total_Company_Count,'Company_Active_Count':Company_Active_Count,
-                'Total_User_Count':Total_User_Count,'User_Active_Count':User_Active_Count, "status": 200}
-        return Response(data=data)
-        
-    
-      
-        
+        user_id = self.kwargs.get("user")
+        return UsersNotifications.objects.filter(user=user_id).order_by("id")
