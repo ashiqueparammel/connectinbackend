@@ -39,6 +39,9 @@ urlpatterns = [
     path('connectionchatlist/<int:user>/',views.ConnectionChatList.as_view(),name ='ConnectionChatList'),
     path('userunfollow/<int:pk>/',views.UserUnFollow.as_view(),name ='UserUnFollow'),
     path('admindashboardcount/',views.AdmindashBoardCount.as_view(),name ='AdmindashBoardCount'),
-    path('notificationlistinguser/<int:user>/',views.NotificationListingUser.as_view(),name ='NotificationListingUser')
+    path('notificationlistinguser/<int:user>/',views.NotificationListingUser.as_view(),name ='NotificationListingUser') ,
+    path('admindashboardrecentuser/',views.AdmindashBoardRecentUser.as_view(),name ='AdmindashBoardRecentUser'), 
+    path('admindashboardrecentcompany/',views.AdmindashBoardRecentCompany.as_view(),name ='AdmindashBoardRecentCompany') ,
+    path('notificationupdateuser/<int:pk>/',views.NotificationUpdateUser.as_view(),name ='NotificationUpdateUser') 
      
 ]

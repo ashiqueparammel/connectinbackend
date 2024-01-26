@@ -16,6 +16,7 @@ urlpatterns = [
     path('listrequiredskills/<int:job>/',views.ListRequired_Skills.as_view(), name='ListRequired_Skills'),   
     path('updatejobskills/<int:pk>/',views.RemoveJobRequired_Skills.as_view(), name='RemoveJobRequired_Skills'),   
     path('companylists/',views.CompanyList.as_view(), name='CompanyList'),   
-    path('companylistadmin/',views.CompanyListAdmin.as_view(), name='CompanyListAdmin')
+    path('companylistadmin/',views.CompanyListAdmin.as_view(), name='CompanyListAdmin'),
+    path('joblistadminside/',views.JobListAdminside.as_view(), name='JobListAdminside')
     
 ]

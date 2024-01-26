@@ -21,6 +21,7 @@ from .serializers import (
     LikeSerializer,
     NotInterestedPostsSerializer,
     NotificationListSerializer,
+    NotificationSerializer,
     PublicPostAddSerializer,
     PublicPostListSerializer,
     ReportPublicPostListSerializer,
@@ -220,7 +221,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class UserList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False)
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False).order_by('id')
     filter_backends = (SearchFilter,)
     search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
@@ -232,7 +233,7 @@ class UserDetails(RetrieveUpdateAPIView):
 
 
 class CompanyList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True)
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True).order_by('id')
     filter_backends = (SearchFilter,)
     search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
@@ -332,7 +333,7 @@ class PublicPostList(ListAPIView):
         queryset = (
             PublicPost.objects.filter(is_available=True)
             .exclude(id__in=not_id)
-            .order_by("id")
+            .order_by("-id")
         )
         return queryset
 
@@ -519,9 +520,28 @@ class AdmindashBoardCount(ListAPIView):
     serializer_class = userDataSerializer
 
 
+class AdmindashBoardRecentUser(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False).order_by(
+        "-id"
+    )[:5]
+    serializer_class = userDataSerializer
+
+
+class AdmindashBoardRecentCompany(ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True).order_by(
+        "-id"
+    )[:5]
+    serializer_class = userDataSerializer
+
+
 class NotificationListingUser(ListAPIView):
     serializer_class = NotificationListSerializer
 
     def get_queryset(self):
         user_id = self.kwargs.get("user")
-        return UsersNotifications.objects.filter(user=user_id).order_by("id")
+        return UsersNotifications.objects.filter(user=user_id).order_by("-id")
+
+
+class NotificationUpdateUser(RetrieveUpdateAPIView):
+    serializer_class = NotificationSerializer
+    queryset = UsersNotifications.objects.all()

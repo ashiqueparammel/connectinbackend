@@ -136,4 +136,9 @@ class NotificationListSerializer(ModelSerializer):
         fields = "__all__"               
         
         
-
+class NotificationSerializer(ModelSerializer):
+    class Meta:
+        model = UsersNotifications
+        fields = "__all__"               
+        
+        

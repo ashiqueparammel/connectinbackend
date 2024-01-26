@@ -12,7 +12,7 @@ class CompanyAdd(CreateAPIView):
     serializer_class = CompanySerializer
     
 class CompanyList(ListAPIView):
-    queryset = Company.objects.filter(is_available=True) 
+    queryset = Company.objects.filter(is_available=True).order_by('id')
     filter_backends = [SearchFilter]
     search_fields = ("company_name", "user__email","id","user__is_active", "user__phone_number")
     serializer_class = CompanyListSerializer    
@@ -33,6 +33,10 @@ class JobAdd(ListCreateAPIView):
     filter_backends = (SearchFilter,)
     search_fields = ("Job_titile", "job_discription","Experiance","job_type", "requerd_skills")
     serializer_class = JobPostSerializer   
+
+class JobListAdminside(ListAPIView): 
+    queryset = JobPost.objects.all() 
+    serializer_class = JobPostSerializer  
     
 class JobListUser(ListAPIView): 
     serializer_class = JobPostListSerializer       
@@ -60,7 +64,6 @@ class JobUpdate(RetrieveUpdateAPIView):
     serializer_class = JobPostSerializer  
 
 class JobList(ListAPIView):    
-    # queryset = JobPost.objects.filter(is_available=True ) 
     serializer_class = JobPostListSerializer 
     def get_queryset(self):
         return JobPost.objects.filter(is_available=True,company=self.kwargs.get('company'))
@@ -82,7 +85,7 @@ class ListRequired_Skills(ListAPIView):
    
 
 class CompanyListAdmin(ListAPIView):
-    queryset = Company.objects.all() 
+    queryset = Company.objects.filter(user__is_company =True).order_by('id') 
     filter_backends = [SearchFilter]
     search_fields = ("company_name", "user__email","id","user__is_active", "user__phone_number")
     serializer_class = CompanyListSerializer    
