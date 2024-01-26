@@ -5,7 +5,6 @@ from .models import Follow, UsersNotifications
 @receiver(post_save, sender=Follow)
 def Check_Connection(sender, instance, created, **kwargs):
     if created:
-        print(instance.following,'hhhhhhhhhhhhhhhhh=================>>>>>')
         followers = instance.followers
         following = instance.following
         if Follow.objects.filter(followers=following, following=followers).exists():
@@ -26,19 +25,6 @@ def Check_Connection(sender, instance, created, **kwargs):
             
 
 
-# @receiver(pre_delete, sender=Follow)
-# def check_connection_after(sender, instance, **kwargs):
-#     followers = instance.followers
-#     following = instance.following
-
-#     if Follow.objects.filter(followers=following, following=followers).exists():
-#         update_data = Follow.objects.get(followers=following, following=followers)
-#         update_data.connection = False
-#         update_data.save()
-#     if Follow.objects.filter(followers=followers, following=following).exists():
-#         update_data1 = Follow.objects.get(followers=followers, following=following)
-#         update_data1.connection = False
-#         update_data1.save()
 
 
 # @receiver(post_save,sender=Follow)

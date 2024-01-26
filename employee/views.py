@@ -30,7 +30,8 @@ from .serializers import (
     SavePostSerializer,
     job_ApplicationsSerializer,
 )
-
+from rest_framework.filters import SearchFilter,OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class EmployeeProfileAdd(ListCreateAPIView):
     queryset = EmployeeProfile.objects.all()
@@ -42,6 +43,14 @@ class EmployeeProfileDetail(ListAPIView):
 
     def get_queryset(self):
         return EmployeeProfile.objects.filter(user=self.kwargs.get("user"))
+    
+    
+class EmployeeListing(ListAPIView):
+    queryset = EmployeeProfile.objects.filter(user__is_company=False,user__is_active=True)
+    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
+    filterset_fields =['Location']
+    search_fields = ['description','header','Location','user__email','user__username']
+    serializer_class = EmployeeProfileDetail_Serializer
 
 
 class EmployeeProfileUpdate(RetrieveUpdateAPIView):
