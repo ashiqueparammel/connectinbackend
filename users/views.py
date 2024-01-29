@@ -351,7 +351,7 @@ class AddLikes(APIView):
         post_id = int(request.data.get("Post"))
         user = get_object_or_404(CustomUser, id=user_id)
         post = get_object_or_404(PublicPost, id=post_id)
-        post.likes += 1
+        post.likes -= 6
         post.save()
         add_like = Like(user=user, Post=post)
         add_like.save()
