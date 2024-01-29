@@ -368,10 +368,10 @@ class UpdateLikes(APIView):
     def post(self, request):
         user_id = int(request.data.get("user"))
         post_id = int(request.data.get("Post"))
-        user_id = get_object_or_404(CustomUser, id=user_id)
+        RemoveLike = Like.objects.filter(id=post_id, user=user_id)
         post_id = get_object_or_404(PublicPost, id=post_id)
-        RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
-        post_id.likes -= 1
+        # RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
+        post_id.likes -= len(user_id)
         post_id.save()
         RemoveLike.delete()
         data = {

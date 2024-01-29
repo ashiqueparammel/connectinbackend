@@ -1,63 +1,78 @@
-amqp==5.2.0
-asgiref==3.7.2
-attrs==23.2.0
-autobahn==23.6.2
-Automat==22.10.0
-billiard==4.2.0
-celery==5.3.6
-certifi==2023.11.17
-cffi==1.16.0
-channels==4.0.0
-channels-redis==4.1.0
-charset-normalizer==3.3.2
-class-registry==2.1.2
-click==8.1.7
-click-didyoumean==0.3.0
-click-plugins==1.1.1
-click-repl==0.3.0
-colorama==0.4.6
-constantly==23.10.4
-cryptography==41.0.7
-daphne==4.0.0
-Django==4.2.7
-django-cors-headers==4.3.0
-django-filter==23.5
-django-phonenumber-field==7.2.0
-djangorestframework==3.14.0
-djangorestframework-simplejwt==5.3.0
-filters==1.3.2
-filters-django==1.0.5
-hyperlink==21.0.0
-idna==3.4
-incremental==22.10.0
-kombu==5.3.4
-msgpack==1.0.7
-phonenumbers==8.13.24
-Pillow==10.1.0
-prompt-toolkit==3.0.43
-psycopg==3.1.12
-psycopg2==2.9.9
-pyasn1==0.5.1
-pyasn1-modules==0.3.0
-pycparser==2.21
-PyJWT==2.8.0
-pyOpenSSL==23.3.0
-python-dateutil==2.8.2
-python-decouple==3.8
-pytz==2023.3.post1
-redis==5.0.1
-regex==2023.10.3
-requests==2.31.0
-service-identity==23.1.0
-six==1.16.0
-sqlparse==0.4.4
-Twisted==23.10.0
-twisted-iocpsupport==1.0.4
-txaio==23.1.1
-typing_extensions==4.8.0
-tzdata==2023.3
-urllib3==2.1.0
-validate-email-address==1
-vine==5.1.0
-wcwidth==0.2.12
-zope.interface==6.1
+pip install amqp==5.2.0
+pip install ansicon==1.89.0
+pip install arrow==1.3.0
+pip install asgiref==3.7.2
+pip install attrs==23.2.0
+pip install autobahn==23.6.2
+pip install Automat==22.10.0
+pip install billiard==4.2.0
+pip install blessed==1.20.0
+pip install celery==5.3.6
+pip install certifi==2023.11.17
+pip install cffi==1.16.0
+pip install channels==4.0.0
+pip install channels-redis==4.1.0
+pip install charset-normalizer==3.3.2
+pip install class-registry==2.1.2
+pip install click==8.1.7
+pip install click-didyoumean==0.3.0
+pip install click-plugins==1.1.1
+pip install click-repl==0.3.0
+pip install colorama==0.4.6
+pip install constantly==23.10.4
+pip install cron-descriptor==1.4.0
+pip install cryptography==41.0.7
+pip install daphne==4.0.0
+pip install Django==4.2.7
+pip install django-background-tasks==1.2.5
+pip install django-celery-beat==2.5.0
+pip install django-celery-results==2.5.1
+pip install django-compat==1.0.15
+pip install django-cors-headers==4.3.0
+pip install django-filter==23.5
+pip install django-phonenumber-field==7.2.0
+pip install django-picklefield==3.1
+pip install django-timezone-field==6.1.0
+pip install djangorestframework==3.14.0
+pip install djangorestframework-simplejwt==5.3.0
+pip install filters==1.3.2
+pip install filters-django==1.0.5
+pip install h11==0.14.0
+pip install hyperlink==21.0.0
+pip install idna==3.4
+pip install incremental==22.10.0
+pip install jinxed==1.2.1
+pip install kombu==5.3.5
+pip install msgpack==1.0.7
+pip install phonenumbers==8.13.24
+pip install Pillow==10.1.0
+pip install prompt-toolkit==3.0.43
+pip install psycopg==3.1.12
+pip install psycopg2==2.9.9
+pip install pyasn1==0.5.1
+pip install pyasn1-modules==0.3.0
+pip install pycparser==2.21
+pip install PyJWT==2.8.0
+pip install pyOpenSSL==23.3.0
+pip install python-crontab==3.0.0
+pip install python-dateutil==2.8.2
+pip install python-decouple==3.8
+pip install pytz==2023.3.post1
+pip install redis==5.0.1
+pip install regex==2023.10.3
+pip install requests==2.31.0
+pip install service-identity==23.1.0
+pip install six==1.16.0
+pip install sqlparse==0.4.4
+pip install Twisted==23.10.0
+pip install twisted-iocpsupport==1.0.4
+pip install txaio==23.1.1
+pip install types-python-dateutil==2.8.19.20240106
+pip install typing_extensions==4.8.0
+pip install tzdata==2023.3
+pip install urllib3==2.1.0
+pip install uvicorn==0.27.0
+pip install validate-email-address==1
+pip install vine==5.1.0
+pip install wcwidth==0.2.12
+pip install zope.interface==6.1
