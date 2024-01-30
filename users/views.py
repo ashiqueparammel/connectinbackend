@@ -1,3 +1,4 @@
+import random
 import requests
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
@@ -221,7 +222,9 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class UserList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False).order_by('id')
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=False).order_by(
+        "id"
+    )
     filter_backends = (SearchFilter,)
     search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
@@ -233,7 +236,9 @@ class UserDetails(RetrieveUpdateAPIView):
 
 
 class CompanyList(ListAPIView):
-    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True).order_by('id')
+    queryset = CustomUser.objects.filter(is_superuser=False, is_company=True).order_by(
+        "id"
+    )
     filter_backends = (SearchFilter,)
     search_fields = ("username", "email", "id", "is_active", "phone_number")
     serializer_class = userDataSerializer
@@ -351,7 +356,7 @@ class AddLikes(APIView):
         post_id = int(request.data.get("Post"))
         user = get_object_or_404(CustomUser, id=user_id)
         post = get_object_or_404(PublicPost, id=post_id)
-        post.likes -= 6
+        post.likes += 1
         post.save()
         add_like = Like(user=user, Post=post)
         add_like.save()
@@ -545,3 +550,59 @@ class NotificationListingUser(ListAPIView):
 class NotificationUpdateUser(RetrieveUpdateAPIView):
     serializer_class = NotificationSerializer
     queryset = UsersNotifications.objects.all()
+
+
+class ForgotPassword(APIView):
+    def post(self, request):
+        Forgot_Email = request.data.get("email")
+        try:
+            CustomUser.objects.get(email=Forgot_Email)
+            user_otp = random.randint(100000, 999999)
+            request.session["otp_session"] = user_otp
+        except:
+            data = {
+                "text": "Entered wrong email",
+                "status": 400,
+            }
+            return Response(data=data)
+        data = {
+            "email": Forgot_Email,
+            "status": 201,
+        }
+        return Response(data=data)
+
+class VerifyEmail(APIView):
+    def post(self, request):
+        otp = int(request.data.get("otp"))
+        Forgot_Email = request.data.get("email")
+        NewPassword = request.data.get("password")
+        if otp:
+            Session_otp = request.session.get("otp_session")
+            if Session_otp == otp:
+                try:
+                    user = CustomUser.objects.get(email=Forgot_Email)
+                    user.set_password(NewPassword)
+                    user.save()
+                    data = {"text": "password updated", "status": 200}
+                    return Response(data=data)
+                except:
+                    data = {
+                        "text": "Entered wrong email",
+                        "status": 400,
+                    }
+                    return Response(data=data)
+            else:
+                data = {
+                    "Text": "Entered wrong otp",
+                    "email": Forgot_Email,
+                    "status": 400,
+                }
+                return Response(data=data)                
+        else:
+            data = {
+                    "Text": "Entered wrong otp",
+                    "email": Forgot_Email,
+                    "status": 400,
+                }
+            return Response(data=data)
+            

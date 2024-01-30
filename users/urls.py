@@ -42,6 +42,8 @@ urlpatterns = [
     path('notificationlistinguser/<int:user>/',views.NotificationListingUser.as_view(),name ='NotificationListingUser') ,
     path('admindashboardrecentuser/',views.AdmindashBoardRecentUser.as_view(),name ='AdmindashBoardRecentUser'), 
     path('admindashboardrecentcompany/',views.AdmindashBoardRecentCompany.as_view(),name ='AdmindashBoardRecentCompany') ,
-    path('notificationupdateuser/<int:pk>/',views.NotificationUpdateUser.as_view(),name ='NotificationUpdateUser') 
+    path('notificationupdateuser/<int:pk>/',views.NotificationUpdateUser.as_view(),name ='NotificationUpdateUser') ,
+    path('forgotpassword/',views.ForgotPassword.as_view(),name ='ForgotPassword') ,
+    path('verifyemail/',views.VerifyEmail.as_view(),name ='VerifyEmail') ,
      
 ]
