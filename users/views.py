@@ -368,9 +368,9 @@ class AddLikes(APIView):
             }
             return Response(data=data)
         else:
-            post.likes -= 1
+            RemoveLike = Like.objects.filter(Post=post_id, user=user_id)
+            post.likes -= len(RemoveLike)
             post.save()
-            RemoveLike = filter(Like, Post=post_id, user=user_id)
             RemoveLike.delete()
             data = {
                 "Text": "Liked Removed",
