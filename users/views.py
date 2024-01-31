@@ -357,37 +357,27 @@ class AddLikes(APIView):
         post_id = int(request.data.get("Post"))
         user = get_object_or_404(CustomUser, id=user_id)
         post = get_object_or_404(PublicPost, id=post_id)
-        post.likes += 1
-        post.save()
-        add_like = Like(user=user, Post=post)
-        add_like.save()
-        data = {
-            "Text": "Liked Added",
-            "status": 201,
-        }
-        return Response(data=data)
-
-
-class UpdateLikes(APIView):
-    serializer_class = LikeSerializer
-
-    def post(self, request):
-        user_id = int(request.data.get("user"))
-        post_id = int(request.data.get("Post"))
-        user_id = get_object_or_404(CustomUser, id=user_id)
-        post_id = get_object_or_404(PublicPost, id=post_id)
-        RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
-        post_id.likes -= 1
-        post_id.save()
-        RemoveLike.delete()
-        data = {
-            "Text": "Liked Removed",
-            "status": 201,
-        }
-        return Response(data=data)
-
-    # queryset = Like.objects.all()
-
+        if not Like.objects.filter(user=user, Post=post).exists():
+            post.likes += 1
+            post.save()
+            add_like = Like(user=user, Post=post)
+            add_like.save()
+            data = {
+                "Text": "Liked Added",
+                "status": 201,
+            }
+            return Response(data=data)
+        else:
+            post.likes -= 1
+            post.save()
+            RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
+            RemoveLike.delete()
+            data = {
+                "Text": "Liked Removed",
+                "status": 200,
+            }
+            return Response(data=data)
+            
 
 class AddComments(APIView):
     serializer_class = CommentsSerializer

@@ -21,7 +21,6 @@ urlpatterns = [
     path('publicpostlist/<int:user>/',views.PublicPostList.as_view(),name ='PublicPostList'),
     path('publicpostupdate/<int:pk>/',views.PublicPostUpdate.as_view(),name ='PublicPostUpdate'),
     path('addlikes/',views.AddLikes.as_view(),name ='AddLikes'),
-    path('updatelikes/',views.UpdateLikes.as_view(),name ='UpdateLikes'),
     path('addcomments/',views.AddComments.as_view(),name ='AddComments'),
     path('postlistcomments/<int:post>/',views.PostListComments.as_view(),name ='PostListComments'),
     path('updatecomments/<int:pk>/',views.UpdateComments.as_view(),name ='UpdateComments'),
