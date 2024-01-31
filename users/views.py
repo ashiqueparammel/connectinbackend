@@ -14,6 +14,7 @@ from .models import (
     PublicPost,
     ReportPublicPost,
     UsersNotifications,
+    ForgotOtp,
 )
 from .serializers import (
     CommentsListSerializer,
@@ -558,7 +559,18 @@ class ForgotPassword(APIView):
         try:
             CustomUser.objects.get(email=Forgot_Email)
             user_otp = random.randint(100000, 999999)
-            request.session["otp_session"] = user_otp
+            newOtp = ForgotOtp.objects.create(email=Forgot_Email, checkotp=user_otp)
+            subject = "Connect in | Forgot Password"
+            message = f"Please verify Your OTP , Your OTP is {user_otp}"
+            from_email = "cootinternational@gmail.com"
+            recipient_list = [Forgot_Email]
+            send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+            data = {
+                "email": Forgot_Email,
+                "status": 201,
+            }
+            return Response(data=data)
+
         except:
             data = {
                 "text": "Entered wrong email",
@@ -571,38 +583,39 @@ class ForgotPassword(APIView):
         }
         return Response(data=data)
 
+
 class VerifyEmail(APIView):
     def post(self, request):
-        otp = int(request.data.get("otp"))
+        userotp = int(request.data.get("otp"))
         Forgot_Email = request.data.get("email")
         NewPassword = request.data.get("password")
-        if otp:
-            Session_otp = request.session.get("otp_session")
-            if Session_otp == otp:
+        if userotp:
+            if ForgotOtp.objects.filter(email=Forgot_Email, checkotp=userotp):
                 try:
-                    user = CustomUser.objects.get(email=Forgot_Email)
+                    user = get_object_or_404(CustomUser, email=Forgot_Email)
                     user.set_password(NewPassword)
                     user.save()
-                    data = {"text": "password updated", "status": 200}
+                    forgot_otp_entries = ForgotOtp.objects.filter(email=Forgot_Email)
+                    forgot_otp_entries.delete()
+                    data = {"Text": "password updated", "status": 200}
                     return Response(data=data)
                 except:
                     data = {
-                        "text": "Entered wrong email",
+                        "Text": "Entered wrong email",
                         "status": 400,
                     }
                     return Response(data=data)
             else:
                 data = {
-                    "Text": "Entered wrong otp",
+                    "Text": "Enterd wrong otp",
                     "email": Forgot_Email,
                     "status": 400,
                 }
-                return Response(data=data)                
+                return Response(data=data)
         else:
             data = {
-                    "Text": "Entered wrong otp",
-                    "email": Forgot_Email,
-                    "status": 400,
-                }
+                "Text": "Enterd wrong otp",
+                "email": Forgot_Email,
+                "status": 400,
+            }
             return Response(data=data)
-            
