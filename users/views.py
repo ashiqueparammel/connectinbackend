@@ -370,7 +370,7 @@ class AddLikes(APIView):
         else:
             post.likes -= 1
             post.save()
-            RemoveLike = get_object_or_404(Like, Post=post_id, user=user_id)
+            RemoveLike = filter(Like, Post=post_id, user=user_id)
             RemoveLike.delete()
             data = {
                 "Text": "Liked Removed",
