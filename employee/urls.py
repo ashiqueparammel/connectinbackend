@@ -21,6 +21,7 @@ urlpatterns = [
     path('myjobslist/<int:profile>/', views.MyJobsList.as_view(), name='MyJobsList'),
     path('mysinglejobslist/<int:pk>/', views.MySingleJobsList.as_view(), name='MySingleJobsList'),
     path('mysinglejobslistunread/<int:job_post>/', views.MySingleJobsListUnRead.as_view(), name='MySingleJobsListUnRead'),
+    path('mysinglejobsaccepted/<int:job_post>/', views.MySingleJobsAccepted.as_view(), name='MySingleJobsAccepted'),
     path('mysinglejobslistread/<int:job_post>/', views.MySingleJobsListRead.as_view(), name='MySingleJobsListRead'),
     path('myapplicationlist/<int:job_post>/', views.MyApplicationList.as_view(), name='MyApplicationList'),
     path('reportjobpostadd/', views.ReportJobPostAdd.as_view(), name='ReportJobPostAdd'),

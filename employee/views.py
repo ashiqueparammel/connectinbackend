@@ -165,6 +165,15 @@ class MySingleJobsListUnRead(ListAPIView):
         )
 
 
+
+class MySingleJobsAccepted(ListAPIView):
+    serializer_class = MyJobsListSerializer
+    def get_queryset(self):
+        return job_Applications.objects.filter(
+            ApplicationStatus ='Accept', is_available=True, job_post=self.kwargs.get("job_post")
+        )
+
+
 class MyJobsList(ListAPIView):
     serializer_class = MyJobsListSerializer
 
