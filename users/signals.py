@@ -1,6 +1,9 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_delete
 from .models import Follow, UsersNotifications
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
 
 @receiver(post_save, sender=Follow)
 def Check_Connection(sender, instance, created, **kwargs):
@@ -21,7 +24,8 @@ def Check_Connection(sender, instance, created, **kwargs):
         if UsersNotifications.objects.filter(user=following,NotifyUser=followers,text=notification_text,NotificationsType='following' ).exists():
             pass
         else:   
-            UsersNotifications.objects.create(user=following,NotifyUser=followers,text=notification_text,NotificationsType='following' )    
+            UsersNotifications.objects.create(user=following,NotifyUser=followers,text=notification_text,NotificationsType='following' )  
+        
             
 
 

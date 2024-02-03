@@ -49,4 +49,5 @@ class ReportJobPost(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     Post = models.ForeignKey(JobPost, on_delete=models.CASCADE)
     Reason = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)        
+    created_at = models.DateTimeField(auto_now_add=True)  
+    
